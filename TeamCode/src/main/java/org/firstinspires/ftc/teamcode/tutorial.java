@@ -20,13 +20,12 @@ public class tutorial extends OpMode {
 
     @Override
     public void loop() {
-        if (gamepad1.a) {
+        if (gamepad1.right_trigger > 0.5) {
             motor.setPower(-0.5);
-            motor2.setPower(-0.5);
-        }
-        if (gamepad1.b) {
+        } else if (gamepad1.left_trigger > 0.5) {
             motor.setPower(0.2);
-            motor2.setPower(0.2);
+        } else {
+            motor.setPower(0);
         }
     }
 }
