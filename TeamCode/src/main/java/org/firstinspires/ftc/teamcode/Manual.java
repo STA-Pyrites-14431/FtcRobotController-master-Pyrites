@@ -33,8 +33,8 @@ public class Manual extends OpMode {
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         servoPL = hardwareMap.get(CRServo.class,"servoPL"); //CH0
         servoPR = hardwareMap.get(CRServo.class,"servoPR"); //EH0
-//        servoRL = hardwareMap.get(CRServo.class,"servoRL"); //CH1
-//        servoRR = hardwareMap.get(CRServo.class,"servoRR"); //EH1
+        servoRL = hardwareMap.get(CRServo.class,"servoRL"); //CH1
+        servoRR = hardwareMap.get(CRServo.class,"servoRR"); //EH1
     }
 
     @Override
@@ -85,8 +85,8 @@ public class Manual extends OpMode {
             motorBR.setPower(0);
         }
         if (gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(-1);
-            motorLR.setPower(1);
+            motorLL.setPower(-0.7);
+            motorLR.setPower(0.7);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
