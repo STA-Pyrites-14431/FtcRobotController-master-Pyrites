@@ -43,8 +43,6 @@ public class Manual extends OpMode {
         lStickX = gamepad1.left_stick_x;
 //        rStickY = gamepad1.right_stick_y;
         rStickX = gamepad1.right_stick_x;
-        servoPL.setPower(-1);
-        servoPR.setPower(1);
         telemetry.addData("Left Stick Y:",lStickY);
         telemetry.addData("Left Stick X:",lStickX);
         telemetry.addData("Right Stick X: ",rStickX);
@@ -69,12 +67,25 @@ public class Manual extends OpMode {
             motorBL.setPower(0);
             motorBR.setPower(0);
         }
-        if (gamepad1.right_bumper) { //Turn on launcher
+
+        if (gamepad2.right_bumper) { //Turn on launcher
             motorLL.setPower(-1);
             motorLR.setPower(1);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
+        }
+
+        if (gamepad2.left_bumper) {
+            servoPL.setPower(1);
+            servoPR.setPower(-1);
+            servoRL.setPower(1);
+            servoRR.setPower(-1);
+        } else {
+            servoPL.setPower(0);
+            servoPR.setPower(0);
+            servoRL.setPower(0);
+            servoRR.setPower(0);
         }
 
 
