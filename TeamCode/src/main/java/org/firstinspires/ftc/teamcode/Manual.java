@@ -48,32 +48,17 @@ public class Manual extends OpMode {
         telemetry.addData("Left Stick Y:",lStickY);
         telemetry.addData("Left Stick X:",lStickX);
         telemetry.addData("Right Stick X: ",rStickX);
-        if (lStickY > 0) { //Backwards
+        if (lStickY != 0) { //Backwards
             motorFL.setPower(lStickY);
             motorFR.setPower(lStickY);
             motorBL.setPower(-lStickY);
             motorBR.setPower(-lStickY);
-        } else if (lStickY < 0) { //Forwards
-            motorFL.setPower(lStickY);
-            motorFR.setPower(lStickY);
-            motorBL.setPower(-lStickY);
-            motorBR.setPower(-lStickY);
-        } else if (lStickX > 0) {
+        } else if (lStickX != 0) {
             motorFL.setPower(lStickX);
             motorFR.setPower(lStickX);
             motorBL.setPower(lStickX);
             motorBR.setPower(lStickX);
-        } else if (lStickX < 0) {
-            motorFL.setPower(lStickX);
-            motorFR.setPower(lStickX);
-            motorBL.setPower(lStickX);
-            motorBR.setPower(lStickX);
-        } else if (rStickX > 0) { //Turn right
-            motorFL.setPower(-rStickX);
-            motorFR.setPower(rStickX);
-            motorBL.setPower(rStickX);
-            motorBR.setPower(-rStickX);
-        } else if (rStickX < 0) { //Turn left
+        } else if (rStickX != 0) { //Turn right
             motorFL.setPower(-rStickX);
             motorFR.setPower(rStickX);
             motorBL.setPower(rStickX);
@@ -85,8 +70,8 @@ public class Manual extends OpMode {
             motorBR.setPower(0);
         }
         if (gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(-0.7);
-            motorLR.setPower(0.7);
+            motorLL.setPower(-1);
+            motorLR.setPower(1);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
