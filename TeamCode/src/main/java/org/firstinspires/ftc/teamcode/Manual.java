@@ -14,8 +14,7 @@ public class Manual extends OpMode {
     DcMotor motorBR; //BackRight motor
     DcMotor motorLL; //LauncherLeft motor
     DcMotor motorLR; //LauncherRight motor
-    CRServo servoPL; //PickupLeft motor
-    CRServo servoPR; //PickupRight motor
+    DcMotor motorI; //Intake motor
     CRServo servoRL; //RampLeft servo
     CRServo  servoRR; //RampRight servo
     float lStickX;
@@ -31,10 +30,9 @@ public class Manual extends OpMode {
         motorBR = hardwareMap.get(DcMotor.class,"motorBR"); //CH1
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
-        servoPL = hardwareMap.get(CRServo.class,"servoPL"); //CH0
-        servoPR = hardwareMap.get(CRServo.class,"servoPR"); //EH0
-        servoRL = hardwareMap.get(CRServo.class,"servoRL"); //CH1
-        servoRR = hardwareMap.get(CRServo.class,"servoRR"); //EH1
+        motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
+        servoRL = hardwareMap.get(CRServo.class,"servoRL"); //CH0
+        servoRR = hardwareMap.get(CRServo.class,"servoRR"); //EH0
     }
 
     @Override
@@ -69,21 +67,19 @@ public class Manual extends OpMode {
         }
 
         if (gamepad2.right_bumper) { //Turn on launcher
-            motorLL.setPower(-1);
-            motorLR.setPower(1);
+            motorLL.setPower(-0.85);
+            motorLR.setPower(0.85);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
         }
 
         if (gamepad2.left_bumper) {
-            servoPL.setPower(1);
-            servoPR.setPower(-1);
-            servoRL.setPower(1);
-            servoRR.setPower(-1);
+            motorI.setPower(-1);
+            servoRL.setPower(-1);
+            servoRR.setPower(1);
         } else {
-            servoPL.setPower(0);
-            servoPR.setPower(0);
+            motorI.setPower(0);
             servoRL.setPower(0);
             servoRR.setPower(0);
         }
