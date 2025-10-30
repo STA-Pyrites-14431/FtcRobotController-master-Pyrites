@@ -43,7 +43,9 @@ public class BotDrive {
         motorBL.setPower(0);
         motorBR.setPower(0);
     }
-    public void turnRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long t) throws InterruptedException{
+    public void turnLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long d) throws InterruptedException{
+
+        long t = (long)((-(8.89092*Math.pow(10,-8))*Math.pow(d,4))+(0.000038866*Math.pow(d,3))+(0.00133745*Math.pow(d,2))+(3.62963*d)+(4.84676*Math.pow(10,-27)));
         motorFL.setPower(speed);
         motorFR.setPower(-speed);
         motorBL.setPower(-speed);
@@ -56,7 +58,10 @@ public class BotDrive {
         motorBL.setPower(0);
         motorBR.setPower(0);
     }
-    public void turnLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long t) throws InterruptedException{
+    public void turnRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long d) throws InterruptedException{
+
+        long t = (long)((-(8.89092*Math.pow(10,-8))*Math.pow(d,4))+(0.000038866*Math.pow(d,3))+(0.00133745*Math.pow(d,2))+(3.62963*d)+(4.84676*Math.pow(10,-27)));
+
         motorFL.setPower(-speed);
         motorFR.setPower(speed);
         motorBL.setPower(speed);

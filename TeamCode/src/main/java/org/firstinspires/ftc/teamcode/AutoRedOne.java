@@ -47,14 +47,11 @@ public class AutoRedOne extends LinearOpMode {
 
         waitForStart();
 
-        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
-        drive.forward(motorFL,motorFR,motorBL,motorBR,1,1200);
-        drive.backward(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.turnRight(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.strafeRight(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
+//        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,60);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
+//        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
 
     }
 

@@ -95,8 +95,8 @@ public class Manual extends OpMode {
 
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(-0.40);
-            motorLR.setPower(0.40);
+            motorLL.setPower(-0.60);
+            motorLR.setPower(0.60);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
@@ -104,17 +104,17 @@ public class Manual extends OpMode {
 
         if (gamepad2.left_bumper|| gamepad1.left_bumper) {
             motorI.setPower(1);
-        } else {
-            motorI.setPower(0);
-        }
-        if (gamepad1.dpad_up) {
-            servoR1.setPower(1);
             servoR2.setPower(1);
             servoR3.setPower(1);
         } else {
-            servoR1.setPower(0);
+            motorI.setPower(0);
             servoR2.setPower(0);
             servoR3.setPower(0);
+        }
+        if (gamepad1.dpad_up) {
+            servoR1.setPower(1);
+        } else {
+            servoR1.setPower(0);
         }
 
 
