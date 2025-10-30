@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @Autonomous(name = "AutoRedOne")
 public class AutoRedOne extends LinearOpMode {
 
+    BotDrive drive = new BotDrive();
+
     DcMotor motorFL; //FrontLeft motor
     DcMotor motorFR; //FrontRight motor
     DcMotor motorBL; //BackLeft motor
@@ -15,8 +17,18 @@ public class AutoRedOne extends LinearOpMode {
     DcMotor motorLL; //LauncherLeft motor
     DcMotor motorLR; //LauncherRight motor
     DcMotor motorI; //Intake motor
-    CRServo servoRL; //RampLeft servo
-    CRServo  servoRR; //RampRight servo
+    CRServo servoR1; //Ramp1 servo
+    CRServo servoR2; //Ramp2 servo
+    CRServo servoR3; //Ramp3 servo
+
+    float axial;
+    float lateral;
+    float yaw;
+    float powerFL;
+    float powerFR;
+    float powerBL;
+    float powerBR;
+    float max;
     double speed = 1.0;
 
     @Override
@@ -29,23 +41,121 @@ public class AutoRedOne extends LinearOpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoRL = hardwareMap.get(CRServo.class,"servoRL"); //CH0
-        servoRR = hardwareMap.get(CRServo.class,"servoRR"); //EH0
+        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
+        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
+        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
 
         waitForStart();
 
-        //move forward
-        motorFL.setPower(-speed);
-        motorFR.setPower(-speed);
-        motorBL.setPower(speed);
-        motorBR.setPower(speed);
-
-        Thread.sleep(250);
-
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
+        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,1200);
+        drive.backward(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.turnRight(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.strafeRight(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
 
     }
+
+    public void PPG() {
+
+    }
+    public void PGP() {
+
+    }
+    public void GPP() {
+
+    }
+//    public void enableIntake() throws InterruptedException{
+//        motorI.setPower(1);
+//        servoR1.setPower(1);
+//        servoR2.setPower(1);
+//        servoR3.setPower(1);
+//    }
+//    public void disableIntake() throws InterruptedException{
+//        motorI.setPower(0);
+//        servoR1.setPower(0);
+//        servoR2.setPower(0);
+//        servoR3.setPower(0);
+//    }
+//    public void forward(float speed, long t) throws InterruptedException {
+//        motorFL.setPower(-speed);
+//        motorFR.setPower(-speed);
+//        motorBL.setPower(speed);
+//        motorBR.setPower(speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//
+//    }
+//    public void backward(float speed, long t) throws InterruptedException{
+//        motorFL.setPower(speed);
+//        motorFR.setPower(speed);
+//        motorBL.setPower(-speed);
+//        motorBR.setPower(-speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//    }
+//    public void turnRight(float speed, long t) throws InterruptedException{
+//        motorFL.setPower(speed);
+//        motorFR.setPower(-speed);
+//        motorBL.setPower(-speed);
+//        motorBR.setPower(speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//    }
+//    public void turnLeft(float speed, long t) throws InterruptedException{
+//        motorFL.setPower(-speed);
+//        motorFR.setPower(speed);
+//        motorBL.setPower(speed);
+//        motorBR.setPower(-speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//    }
+//    public void strafeRight(float speed, long t) throws InterruptedException{
+//        motorFL.setPower(-speed);
+//        motorFR.setPower(-speed);
+//        motorBL.setPower(speed);
+//        motorBR.setPower(speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//    }
+//    public void strafeLeft(float speed, long t) throws InterruptedException{
+//        motorFL.setPower(-speed);
+//        motorFR.setPower(-speed);
+//        motorBL.setPower(speed);
+//        motorBR.setPower(speed);
+//
+//        Thread.sleep(t);
+//
+//        motorFL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBL.setPower(0);
+//        motorBR.setPower(0);
+//    }
 }

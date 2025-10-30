@@ -17,7 +17,7 @@ public class Manual extends OpMode {
     DcMotor motorLR; //LauncherRight motor
     DcMotor motorI; //Intake motor
     CRServo servoR1; //Ramp1 servo
-    CRServo  servoR2; //Ramp1 servo
+    CRServo servoR2; //Ramp2 servo
     CRServo servoR3; //Ramp3 servo
 
     float axial;
@@ -38,44 +38,13 @@ public class Manual extends OpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //CH0
-        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH0
-        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //CH1
+        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
+        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
+        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
     }
 
     @Override
     public void loop() {
-//        lStickY = -gamepad1.left_stick_y;
-//        lStickX = gamepad1.left_stick_x;
-//        rStickX = gamepad1.right_stick_x;
-//        telemetry.addData("Left Stick Y:",lStickY);
-//        telemetry.addData("Left Stick X:",lStickX);
-//        telemetry.addData("Right Stick X: ",rStickX);
-//        if (lStickY != 0) { //Backwards
-//            motorFL.setPower(-lStickY);
-//            motorFR.setPower(-lStickY);
-//            motorBL.setPower(lStickY);
-//            motorBR.setPower(lStickY);
-//        } else if (lStickX != 0) {
-//            motorFL.setPower(-lStickX);
-//            motorFR.setPower(-lStickX);
-//            motorBL.setPower(-lStickX);
-//            motorBR.setPower(-lStickX);
-//        } else if (rStickX != 0) { //Turn right
-//            motorFL.setPower(-rStickX);
-//            motorFR.setPower(rStickX);
-//            motorBL.setPower(rStickX);
-//            motorBR.setPower(-rStickX);
-//        } else { //Turn motor off
-//            motorFL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBL.setPower(0);
-//            motorBR.setPower(0);
-//        }
-
-
-        //if (lStickY == 0 && lStickX == 0 && rStickX == 0) //for else for turning motor off if using else if
-
 
         //sets the direction that each wheel will spin
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -88,9 +57,9 @@ public class Manual extends OpMode {
         yaw = gamepad1.right_stick_x; //gets input of left and right of right stick for the robot turning
 
         //calculates the power for each wheel based on how the three inputs would work together
-        powerFL = axial + lateral + yaw;
+        powerFL = axial - lateral + yaw;
         powerFR = axial - lateral - yaw;
-        powerBL = axial - lateral + yaw;
+        powerBL = axial + lateral + yaw;
         powerBR = axial + lateral - yaw;
 
         //calculates the max power of the wheels so that way none of them go over 100% or 1.0
@@ -125,7 +94,7 @@ public class Manual extends OpMode {
 
 
 
-        if (gamepad2.right_bumper) { //Turn on launcher
+        if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
             motorLL.setPower(-0.40);
             motorLR.setPower(0.40);
         } else { //Turn off launcher
@@ -133,13 +102,16 @@ public class Manual extends OpMode {
             motorLR.setPower(0);
         }
 
-        if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper|| gamepad1.left_bumper) {
             motorI.setPower(1);
-            servoR1.setPower(-1);
-            servoR2.setPower(1);
-            servoR3.setPower(-1);
         } else {
             motorI.setPower(0);
+        }
+        if (gamepad1.dpad_up) {
+            servoR1.setPower(1);
+            servoR2.setPower(1);
+            servoR3.setPower(1);
+        } else {
             servoR1.setPower(0);
             servoR2.setPower(0);
             servoR3.setPower(0);
