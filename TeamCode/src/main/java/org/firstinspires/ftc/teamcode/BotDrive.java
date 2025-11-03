@@ -78,9 +78,9 @@ public class BotDrive {
     }
     public void strafeRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long t) throws InterruptedException{
         motorFL.setPower(-speed);
-        motorFR.setPower(-speed);
+        motorFR.setPower(speed);
         motorBL.setPower(speed);
-        motorBR.setPower(speed);
+        motorBR.setPower(-speed);
 
         Thread.sleep(t);
 
@@ -90,9 +90,9 @@ public class BotDrive {
         motorBR.setPower(0);
     }
     public void strafeLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, float speed, long t) throws InterruptedException{
-        motorFL.setPower(-speed);
+        motorFL.setPower(speed);
         motorFR.setPower(-speed);
-        motorBL.setPower(speed);
+        motorBL.setPower(-speed);
         motorBR.setPower(speed);
 
         Thread.sleep(t);

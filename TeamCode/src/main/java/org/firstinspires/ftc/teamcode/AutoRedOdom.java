@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+@Autonomous(name = "AutoRedOdom")
 public class AutoRedOdom extends LinearOpMode {
 
-    BotDrive drive = new BotDrive();
+    BotDriveOdom odomDrive = new BotDriveOdom();
 
     DcMotor motorFL; //FrontLeft motor
     DcMotor motorFR; //FrontRight motor
@@ -19,16 +21,16 @@ public class AutoRedOdom extends LinearOpMode {
     CRServo servoR2; //Ramp2 servo
     CRServo servoR3; //Ramp3 servo
 
-    float axial;
-    float lateral;
-    float yaw;
-    float powerFL;
-    float powerFR;
-    float powerBL;
-    float powerBR;
-    float max;
+    double axial;
+    double lateral;
+    double yaw;
+    double powerFL;
+    double powerFR;
+    double powerBL;
+    double powerBR;
+    double max;
     double ticks = 537.7;
-    double newTarget;
+    double ticksPerInch = 20.9;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -43,6 +45,18 @@ public class AutoRedOdom extends LinearOpMode {
         servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
         servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
 
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //Hopefully move bot 1 foot forward, left, backwards, and right
+        odomDrive.forward(motorFL,motorFR,motorBL,motorBR,0.6,12);
+        Thread.sleep(500);
+        odomDrive.strafeLeft(motorFL,motorFR,motorBL,motorBR,0.6,12);
+        Thread.sleep(500);
+        odomDrive.backward(motorFL,motorFR,motorBL,motorBR,0.6,12);
+        Thread.sleep(500);
+        odomDrive.strafeRight(motorFL,motorFR,motorBL,motorBR,0.6,12);
     }
 }

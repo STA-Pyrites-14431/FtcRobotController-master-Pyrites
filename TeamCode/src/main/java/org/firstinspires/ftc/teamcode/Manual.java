@@ -20,14 +20,14 @@ public class Manual extends OpMode {
     CRServo servoR2; //Ramp2 servo
     CRServo servoR3; //Ramp3 servo
 
-    float axial;
-    float lateral;
-    float yaw;
-    float powerFL;
-    float powerFR;
-    float powerBL;
-    float powerBR;
-    float max;
+    double axial;
+    double lateral;
+    double yaw;
+    double powerFL;
+    double powerFR;
+    double powerBL;
+    double powerBR;
+    double max;
 
     @Override
     public void init() {
@@ -41,6 +41,11 @@ public class Manual extends OpMode {
         servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH3`
         servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
         servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
+
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     @Override
