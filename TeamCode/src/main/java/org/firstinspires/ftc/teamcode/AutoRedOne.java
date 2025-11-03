@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @Autonomous(name = "AutoRedOne")
 public class AutoRedOne extends LinearOpMode {
@@ -49,8 +50,12 @@ public class AutoRedOne extends LinearOpMode {
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
         drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,60);
-        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
+        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.launch(motorLR,motorLL,10000);
+        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,90);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,500);
+//        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
 //        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
 
     }

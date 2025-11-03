@@ -38,7 +38,7 @@ public class Manual extends OpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
+        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH3`
         servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
         servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
     }
@@ -92,8 +92,6 @@ public class Manual extends OpMode {
         telemetry.addData("Back-Left Wheel Power: ",powerBL);
         telemetry.addData("Back-Right Wheel Power: ",powerBR);
 
-
-
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
             motorLL.setPower(-0.60);
             motorLR.setPower(0.60);
@@ -102,19 +100,30 @@ public class Manual extends OpMode {
             motorLR.setPower(0);
         }
 
-        if (gamepad2.left_bumper|| gamepad1.left_bumper) {
+        if (gamepad2.left_bumper || gamepad1.left_bumper) {
             motorI.setPower(1);
             servoR2.setPower(1);
             servoR3.setPower(1);
+//            servoR1.setPower(1);
         } else {
             motorI.setPower(0);
             servoR2.setPower(0);
             servoR3.setPower(0);
+//            servoR1.setPower(0);
         }
-        if (gamepad1.dpad_up) {
+        if (gamepad2.dpad_up || gamepad1.dpad_up) {
             servoR1.setPower(1);
         } else {
             servoR1.setPower(0);
+        }
+        if (gamepad2.dpad_down || gamepad1.dpad_down) {
+//            servoR1.setPower(-1);
+            servoR2.setPower(-1);
+            servoR3.setPower(-1);
+        } else {
+//            servoR1.setPower(0);
+            servoR2.setPower(0);
+            servoR3.setPower(0);
         }
 
 

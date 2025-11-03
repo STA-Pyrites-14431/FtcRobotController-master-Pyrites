@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@TeleOp(name="dataCollect")
-public class DataCollect extends OpMode {
+@Autonomous(name = "ForwardMarch")
+public class ForwardAuto extends LinearOpMode {
 
     BotDrive drive = new BotDrive();
 
@@ -21,12 +21,18 @@ public class DataCollect extends OpMode {
     CRServo servoR2; //Ramp2 servo
     CRServo servoR3; //Ramp3 servo
 
-    float speed = 0;
-    int degrees = 0;
-    int time = 0;
+    float axial;
+    float lateral;
+    float yaw;
+    float powerFL;
+    float powerFR;
+    float powerBL;
+    float powerBR;
+    float max;
 
     @Override
-    public void init() {
+    public void runOpMode() throws InterruptedException {
+
         motorFL = hardwareMap.get(DcMotor.class,"motorFL"); //EH0
         motorFR = hardwareMap.get(DcMotor.class,"motorFR"); //CH0
         motorBL = hardwareMap.get(DcMotor.class,"motorBL"); //EH1
@@ -37,28 +43,11 @@ public class DataCollect extends OpMode {
         servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
         servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
         servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
-    }
 
-    @Override
-    public void loop() {
-        if (gamepad1.dpad_up) {
-            degrees += 5;
-        } else if (gamepad1.dpad_down) {
-            degrees -= 5;
-        }
-        if (gamepad1.dpad_left) {
-            speed -= 0.1;
-        } else if (gamepad1.dpad_right) {
-            speed += 0.1;
-        }
-        if (gamepad1.right_bumper) {
-            time += 100;
-        } else if (gamepad1.left_bumper) {
-            time -= 100;
-        }
-        telemetry.addData("Degrees",degrees);
-        telemetry.addData("Speed",speed);
-        telemetry.addData("Time",time);
+        waitForStart();
+
+//        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,200);
 
     }
 }

@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.robotcore.external.function.InterruptableThrowingRunnable;
+
 public class BotDrive {
     public void enableIntake(DcMotor motorI, CRServo servoR1, CRServo servoR2, CRServo servoR3) throws InterruptedException{
         motorI.setPower(1);
@@ -99,5 +101,15 @@ public class BotDrive {
         motorFR.setPower(0);
         motorBL.setPower(0);
         motorBR.setPower(0);
+    }
+
+    public void launch(DcMotor motorLR, DcMotor motorLL, long t) throws InterruptedException {
+        motorLR.setPower(0.4);
+        motorLL.setPower(-0.4);
+
+        Thread.sleep(t);
+
+        motorLR.setPower(0);
+        motorLL.setPower(0);
     }
 }
