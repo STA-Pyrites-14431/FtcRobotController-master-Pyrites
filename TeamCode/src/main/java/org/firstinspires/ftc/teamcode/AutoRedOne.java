@@ -46,6 +46,11 @@ public class AutoRedOne extends LinearOpMode {
         servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
         servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
 
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         waitForStart();
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
