@@ -1,36 +1,29 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+// field size: 144in x 144in
+
 @Autonomous(name = "AutoRedOdom")
 public class AutoRedOdom extends LinearOpMode {
 
+    GoBildaPinpointDriver odo;
     BotDriveOdom odomDrive = new BotDriveOdom();
 
-    DcMotor motorFL; //FrontLeft motor
-    DcMotor motorFR; //FrontRight motor
-    DcMotor motorBL; //BackLeft motor
-    DcMotor motorBR; //BackRight motor
-    DcMotor motorLL; //LauncherLeft motor
-    DcMotor motorLR; //LauncherRight motor
-    DcMotor motorI; //Intake motor
-    CRServo servoR1; //Ramp1 servo
-    CRServo servoR2; //Ramp2 servo
-    CRServo servoR3; //Ramp3 servo
+    //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
+    //LL = Launcher Left, LR = Launcher Right, I = Intake
+    //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
+    //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
+    DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
 
-    double axial;
-    double lateral;
-    double yaw;
-    double powerFL;
-    double powerFR;
-    double powerBL;
-    double powerBR;
-    double max;
+    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
     double ticks = 537.7;
     double ticksPerInch = 20.9;
+    double newTarget;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -41,22 +34,58 @@ public class AutoRedOdom extends LinearOpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
-        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
-        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
+        motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //Hopefully move bot 1 foot forward, left, backwards, and right
-        odomDrive.forward(motorFL,motorFR,motorBL,motorBR,0.6,12);
-        Thread.sleep(500);
-        odomDrive.strafeLeft(motorFL,motorFR,motorBL,motorBR,0.6,12);
-        Thread.sleep(500);
-        odomDrive.backward(motorFL,motorFR,motorBL,motorBR,0.6,12);
-        Thread.sleep(500);
-        odomDrive.strafeRight(motorFL,motorFR,motorBL,motorBR,0.6,12);
+        waitForStart();
+
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        newTarget = ticksPerInch*36;
+
+        motorFL.setTargetPosition((int)ticks);
+        motorFR.setTargetPosition((int)ticks);
+        motorBL.setTargetPosition((int)ticks);
+        motorBR.setTargetPosition((int)ticks);
+
+        motorFL.setPower(-1);
+        motorFR.setPower(-1);
+        motorBL.setPower(1);
+        motorBR.setPower(1);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+    public void forward(double speed, double inches) throws InterruptedException {
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        newTarget = ticksPerInch*inches;
+
+        motorFL.setTargetPosition((int)newTarget);
+        motorFR.setTargetPosition((int)newTarget);
+        motorBL.setTargetPosition((int)newTarget);
+        motorBR.setTargetPosition((int)newTarget);
+
+        motorFL.setPower(speed);
+        motorFR.setPower(speed);
+        motorBL.setPower(-speed);
+        motorBR.setPower(-speed);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }

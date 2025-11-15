@@ -37,12 +37,6 @@ public class ForwardAuto extends LinearOpMode {
         motorFR = hardwareMap.get(DcMotor.class,"motorFR"); //CH0
         motorBL = hardwareMap.get(DcMotor.class,"motorBL"); //EH1
         motorBR = hardwareMap.get(DcMotor.class,"motorBR"); //CH1
-        motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
-        motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
-        motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
-        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
-        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
 
         waitForStart();
 

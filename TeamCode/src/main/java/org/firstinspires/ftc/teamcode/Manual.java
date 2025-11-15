@@ -1,33 +1,26 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
 @TeleOp(name = "manual")
 public class Manual extends OpMode {
 
-    DcMotor motorFL; //FrontLeft motor
-    DcMotor motorFR; //FrontRight motor
-    DcMotor motorBL; //BackLeft motor
-    DcMotor motorBR; //BackRight motor
-    DcMotor motorLL; //LauncherLeft motor
-    DcMotor motorLR; //LauncherRight motor
-    DcMotor motorI; //Intake motor
-    CRServo servoR1; //Ramp1 servo
-    CRServo servoR2; //Ramp2 servo
-    CRServo servoR3; //Ramp3 servo
+    GoBildaPinpointDriver odo;
 
-    double axial;
-    double lateral;
-    double yaw;
-    double powerFL;
-    double powerFR;
-    double powerBL;
-    double powerBR;
-    double max;
+    //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
+    //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
+    DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
+
+    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
 
     @Override
     public void init() {
@@ -38,14 +31,22 @@ public class Manual extends OpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH3`
-        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
-        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
+        motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+
+        odo.setOffsets(0,0, DistanceUnit.INCH);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.resetPosAndIMU();
+        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
+        odo.setPosition(startingPos);
+
     }
 
     @Override
@@ -57,28 +58,26 @@ public class Manual extends OpMode {
         motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
         motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        axial = -gamepad1.left_stick_y; //gets input of up and down of left stick for the forward and backwards robot driving //negative since up is negative for some reason
+
+        axial = gamepad1.left_stick_y; //gets input of up and down of left stick for the forward and backwards robot driving
         lateral = gamepad1.left_stick_x; //gets input of left and right of left stick for the robot strafing
         yaw = gamepad1.right_stick_x; //gets input of left and right of right stick for the robot turning
 
-        //calculates the power for each wheel based on how the three inputs would work together
-        powerFL = axial - lateral + yaw;
-        powerFR = axial - lateral - yaw;
-        powerBL = axial + lateral + yaw;
-        powerBR = axial + lateral - yaw;
+        //Odometry auto for field centric driving
+        Pose2D pos = odo.getPosition();
+        double heading = odo.getHeading(AngleUnit.RADIANS);
 
-        //calculates the max power of the wheels so that way none of them go over 100% or 1.0
-        max = Math.max(Math.abs(powerFL), Math.abs(powerFR));
-        max = Math.max(max, Math.abs(powerBL));
-        max = Math.max(max, Math.abs(powerBR));
+        double cosAngle = Math.cos((Math.PI/2)-heading);
+        double sinAngle = Math.sin((Math.PI/2)-heading);
 
-        //if the max is over 100% or 1.0, lessen the power for the wheels
-        if (max > 1.0) {
-            powerFL /= max;
-            powerFR /= max;
-            powerBL /= max;
-            powerBR /= max;
-        }
+        double strafe = -axial * sinAngle + lateral * cosAngle;
+        double forward = axial * cosAngle + lateral * sinAngle;
+
+        powerFL = -forward + strafe + yaw;
+        powerFR = -forward + strafe - yaw;
+        powerBL = forward + strafe + yaw;
+        powerBR = forward + strafe - yaw;
+
 
         //sets the power for the wheels
         motorFL.setPower(powerFL);
@@ -86,6 +85,13 @@ public class Manual extends OpMode {
         motorBL.setPower(powerBL);
         motorBR.setPower(powerBR);
 
+        telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
+        telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
+        telemetry.addData("Heading: ",heading);
+        telemetry.addData("Forward Speed: ",forward);
+        telemetry.addData("Strafe Speed: ",strafe);
+
+        /*
        //show the input amount from each stick on driver hub
         telemetry.addData("Driving Input: ",axial);
         telemetry.addData("Strafing Input: ",lateral);
@@ -96,6 +102,7 @@ public class Manual extends OpMode {
         telemetry.addData("Front-Right Wheel Power: ",powerFR);
         telemetry.addData("Back-Left Wheel Power: ",powerBL);
         telemetry.addData("Back-Right Wheel Power: ",powerBR);
+         */
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
             motorLL.setPower(-0.60);
@@ -107,28 +114,13 @@ public class Manual extends OpMode {
 
         if (gamepad2.left_bumper || gamepad1.left_bumper) {
             motorI.setPower(1);
-            servoR2.setPower(1);
-            servoR3.setPower(1);
-//            servoR1.setPower(1);
+            motorR.setPower(0.6);
+        } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
+            motorI.setPower(-1);
+            motorR.setPower(-0.6);
         } else {
             motorI.setPower(0);
-            servoR2.setPower(0);
-            servoR3.setPower(0);
-//            servoR1.setPower(0);
-        }
-        if (gamepad2.dpad_up || gamepad1.dpad_up) {
-            servoR1.setPower(1);
-        } else {
-            servoR1.setPower(0);
-        }
-        if (gamepad2.dpad_down || gamepad1.dpad_down) {
-//            servoR1.setPower(-1);
-            servoR2.setPower(-1);
-            servoR3.setPower(-1);
-        } else {
-//            servoR1.setPower(0);
-            servoR2.setPower(0);
-            servoR3.setPower(0);
+            motorR.setPower(0);
         }
 
 

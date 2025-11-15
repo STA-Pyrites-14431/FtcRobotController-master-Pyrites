@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 
@@ -8,17 +9,13 @@ import org.firstinspires.ftc.robotcore.external.function.InterruptableThrowingRu
 public class BotDriveOdom {
     double ticksPerInch = 20.9;
     double newTarget;
-    public void enableIntake(DcMotor motorI, CRServo servoR1, CRServo servoR2, CRServo servoR3) throws InterruptedException{
+    public void enableIntake(DcMotor motorI, DcMotor motorR) throws InterruptedException{
         motorI.setPower(1);
-        servoR1.setPower(1);
-        servoR2.setPower(1);
-        servoR3.setPower(1);
+        motorR.setPower(-1);
     }
-    public void disableIntake(DcMotor motorI, CRServo servoR1, CRServo servoR2, CRServo servoR3) throws InterruptedException{
+    public void disableIntake(DcMotor motorI, DcMotor motorR) throws InterruptedException{
         motorI.setPower(0);
-        servoR1.setPower(0);
-        servoR2.setPower(0);
-        servoR3.setPower(0);
+        motorR.setPower(0);
     }
     public void forward(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, double inches) throws InterruptedException {
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -33,10 +30,10 @@ public class BotDriveOdom {
         motorBL.setTargetPosition((int)newTarget);
         motorBR.setTargetPosition((int)newTarget);
 
-        motorFL.setPower(-speed);
-        motorFR.setPower(-speed);
-        motorBL.setPower(speed);
-        motorBR.setPower(speed);
+        motorFL.setPower(speed);
+        motorFR.setPower(speed);
+        motorBL.setPower(-speed);
+        motorBR.setPower(-speed);
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -56,10 +53,10 @@ public class BotDriveOdom {
         motorBL.setTargetPosition((int)newTarget);
         motorBR.setTargetPosition((int)newTarget);
 
-        motorFL.setPower(speed);
-        motorFR.setPower(speed);
-        motorBL.setPower(-speed);
-        motorBR.setPower(-speed);
+        motorFL.setPower(-speed);
+        motorFR.setPower(-speed);
+        motorBL.setPower(speed);
+        motorBR.setPower(speed);
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);

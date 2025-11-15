@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,25 +12,11 @@ public class AutoRedOne extends LinearOpMode {
 
     BotDrive drive = new BotDrive();
 
-    DcMotor motorFL; //FrontLeft motor
-    DcMotor motorFR; //FrontRight motor
-    DcMotor motorBL; //BackLeft motor
-    DcMotor motorBR; //BackRight motor
-    DcMotor motorLL; //LauncherLeft motor
-    DcMotor motorLR; //LauncherRight motor
-    DcMotor motorI; //Intake motor
-    CRServo servoR1; //Ramp1 servo
-    CRServo servoR2; //Ramp2 servo
-    CRServo servoR3; //Ramp3 servo
+    //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
+    //LL = Launcher Left, LR = Launcher Right, I = Intake
+    DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
 
-    float axial;
-    float lateral;
-    float yaw;
-    float powerFL;
-    float powerFR;
-    float powerBL;
-    float powerBR;
-    float max;
+    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
     double speed = 1.0;
 
     @Override
@@ -42,9 +29,7 @@ public class AutoRedOne extends LinearOpMode {
         motorLR = hardwareMap.get(DcMotor.class,"motorLR"); //CH2
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
-        servoR1 = hardwareMap.get(CRServo.class,"servoR1"); //EH0
-        servoR2 = hardwareMap.get(CRServo.class,"servoR2"); //EH1
-        servoR3 = hardwareMap.get(CRServo.class,"servoR3"); //EH2
+        motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -55,9 +40,9 @@ public class AutoRedOne extends LinearOpMode {
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
         drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.enableIntake(motorI,motorR);
         drive.launch(motorLR,motorLL,10000);
-        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
+        drive.disableIntake(motorI,motorR);
         drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,90);
         drive.forward(motorFL,motorFR,motorBL,motorBR,1,500);
 //        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
