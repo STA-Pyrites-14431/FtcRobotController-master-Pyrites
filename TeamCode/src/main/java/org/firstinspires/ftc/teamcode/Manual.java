@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -14,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 @TeleOp(name = "manual")
 public class Manual extends OpMode {
 
-    GoBildaPinpointDriver odo;
+    GoBildaPinpointDriver ODM;
 
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
@@ -38,19 +37,21 @@ public class Manual extends OpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
-        odo.setOffsets(0,0, DistanceUnit.INCH);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        odo.resetPosAndIMU();
+        ODM.setOffsets(0,0, DistanceUnit.INCH);
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        ODM.resetPosAndIMU();
         Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
-        odo.setPosition(startingPos);
+        ODM.setPosition(startingPos);
 
     }
 
     @Override
     public void loop() {
+
+        ODM.update();
 
         //sets the direction that each wheel will spin
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -63,15 +64,18 @@ public class Manual extends OpMode {
         lateral = gamepad1.left_stick_x; //gets input of left and right of left stick for the robot strafing
         yaw = gamepad1.right_stick_x; //gets input of left and right of right stick for the robot turning
 
+
         //Odometry auto for field centric driving
-        Pose2D pos = odo.getPosition();
-        double heading = odo.getHeading(AngleUnit.RADIANS);
+        Pose2D pos = ODM.getPosition();
+        double heading = -ODM.getHeading(AngleUnit.RADIANS);
 
         double cosAngle = Math.cos((Math.PI/2)-heading);
         double sinAngle = Math.sin((Math.PI/2)-heading);
 
         double strafe = -axial * sinAngle + lateral * cosAngle;
         double forward = axial * cosAngle + lateral * sinAngle;
+
+        double frequency = ODM.getFrequency();
 
         powerFL = -forward + strafe + yaw;
         powerFR = -forward + strafe - yaw;
@@ -87,9 +91,11 @@ public class Manual extends OpMode {
 
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
-        telemetry.addData("Heading: ",heading);
+        telemetry.addData("Heading: ",Math.toDegrees(heading));
         telemetry.addData("Forward Speed: ",forward);
         telemetry.addData("Strafe Speed: ",strafe);
+        telemetry.addData("Frequency: ",frequency);
+        telemetry.update();
 
         /*
        //show the input amount from each stick on driver hub
@@ -105,8 +111,8 @@ public class Manual extends OpMode {
          */
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(-0.60);
-            motorLR.setPower(0.60);
+            motorLL.setPower(-0.40);
+            motorLR.setPower(0.40);
         } else { //Turn off launcher
             motorLL.setPower(0);
             motorLR.setPower(0);
