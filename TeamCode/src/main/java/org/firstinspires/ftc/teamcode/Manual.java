@@ -97,19 +97,6 @@ public class Manual extends OpMode {
         telemetry.addData("Frequency: ",frequency);
         telemetry.update();
 
-        /*
-       //show the input amount from each stick on driver hub
-        telemetry.addData("Driving Input: ",axial);
-        telemetry.addData("Strafing Input: ",lateral);
-        telemetry.addData("Turning Input: ",yaw);
-
-        //show the power of each wheel as a percentage on driver hub
-        telemetry.addData("Front-Left Wheel Power: ",powerFL);
-        telemetry.addData("Front-Right Wheel Power: ",powerFR);
-        telemetry.addData("Back-Left Wheel Power: ",powerBL);
-        telemetry.addData("Back-Right Wheel Power: ",powerBR);
-         */
-
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
             motorLL.setPower(-0.40);
             motorLR.setPower(0.40);

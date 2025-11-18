@@ -50,20 +50,26 @@ public class AutoRedOdom extends LinearOpMode {
 
         newTarget = ticksPerInch*36;
 
-        motorFL.setTargetPosition((int)ticks);
-        motorFR.setTargetPosition((int)ticks);
-        motorBL.setTargetPosition((int)ticks);
-        motorBR.setTargetPosition((int)ticks);
+        motorFL.setTargetPosition((int)newTarget);
+        motorFR.setTargetPosition((int)newTarget);
+        motorBL.setTargetPosition((int)newTarget);
+        motorBR.setTargetPosition((int)newTarget);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motorFL.setPower(-1);
         motorFR.setPower(-1);
         motorBL.setPower(1);
         motorBR.setPower(1);
 
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        telemetry.addData("Target: ",newTarget);
+        telemetry.addData("FLPos",motorFL.getCurrentPosition());
+        telemetry.addData("FRPos",motorFR.getCurrentPosition());
+        telemetry.addData("BLPos",motorBL.getCurrentPosition());
+        telemetry.addData("BRPos",motorBR.getCurrentPosition());
     }
     public void forward(double speed, double inches) throws InterruptedException {
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
