@@ -41,7 +41,7 @@ public class ForwardAuto extends LinearOpMode {
         waitForStart();
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
-        drive.forward(motorFL,motorFR,motorBL,motorBR,1,200);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,400);
 
     }
 }

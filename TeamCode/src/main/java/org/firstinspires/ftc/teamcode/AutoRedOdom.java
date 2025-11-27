@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 // field size: 144in x 144in
 
@@ -21,6 +22,7 @@ public class AutoRedOdom extends LinearOpMode {
     DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
 
     double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
+    int posFL=0, posFR=0, posBL=0, posBR=0;
     double ticks = 537.7;
     double ticksPerInch = 20.9;
     double newTarget;
@@ -41,51 +43,43 @@ public class AutoRedOdom extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        waitForStart();
-
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        waitForStart();
+
         newTarget = ticksPerInch*36;
 
-        motorFL.setTargetPosition((int)ticks);
-        motorFR.setTargetPosition((int)ticks);
-        motorBL.setTargetPosition((int)ticks);
-        motorBR.setTargetPosition((int)ticks);
+        forward(0.6,36);
+    }
+    public void forward(double speed, double inches) throws InterruptedException {
 
-        motorFL.setPower(-1);
-        motorFR.setPower(-1);
-        motorBL.setPower(1);
-        motorBR.setPower(1);
+        double target = ticksPerInch*inches;
+
+        motorFL.setTargetPosition((int)target);
+        motorFR.setTargetPosition((int)target);
+        motorBL.setTargetPosition((int)target);
+        motorBR.setTargetPosition((int)target);
 
         motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-    }
-    public void forward(double speed, double inches) throws InterruptedException {
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        newTarget = ticksPerInch*inches;
-
-        motorFL.setTargetPosition((int)newTarget);
-        motorFR.setTargetPosition((int)newTarget);
-        motorBL.setTargetPosition((int)newTarget);
-        motorBR.setTargetPosition((int)newTarget);
 
         motorFL.setPower(speed);
         motorFR.setPower(speed);
         motorBL.setPower(-speed);
         motorBR.setPower(-speed);
 
-        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        while (opModeIsActive() && motorFL.isBusy() && motorFR.isBusy() && motorBL.isBusy() && motorBR.isBusy()) {
+            idle();
+        }
     }
 }

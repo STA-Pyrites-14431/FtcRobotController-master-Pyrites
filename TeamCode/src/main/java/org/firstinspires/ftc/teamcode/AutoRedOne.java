@@ -7,10 +7,14 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
 @Autonomous(name = "AutoRedOne")
 public class AutoRedOne extends LinearOpMode {
 
     BotDrive drive = new BotDrive();
+
+    GoBildaPinpointDriver ODM;
 
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake
@@ -31,22 +35,39 @@ public class AutoRedOne extends LinearOpMode {
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
         motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
 
+        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
+
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
+        ODM.resetPosAndIMU();
+        ODM.update();
+
+        double heading = ODM.getHeading(AngleUnit.RADIANS);
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
-        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
-        drive.enableIntake(motorI,motorR);
-        drive.launch(motorLR,motorLL,10000);
-        drive.disableIntake(motorI,motorR);
-        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,90);
-        drive.forward(motorFL,motorFR,motorBL,motorBR,1,500);
+        drive.forward(motorFL,motorFR,motorBL,motorBR,1,400);
+        drive.enableLaunch(motorLR,motorLL,0.45);
+        Thread.sleep(2200);
+        drive.enableRamp(motorR);
+        Thread.sleep(1000);
+        drive.disableRamp(motorR);
+        Thread.sleep(250);
+        drive.enableRamp(motorR);
+        Thread.sleep(1000);
+        drive.disableRamp(motorR);
+        drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,115);
+        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,0.5,250);
+//        drive.forward(motorFL,motorFR,motorBL,motorBR,1,500);
 //        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
 //        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
+        ODM.update();
+        heading = ODM.getHeading(AngleUnit.DEGREES);
+        telemetry.addData("Heading: ",heading);
+        telemetry.update();
 
     }
 
