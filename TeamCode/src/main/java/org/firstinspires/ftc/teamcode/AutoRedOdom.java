@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 // field size: 144in x 144in
 
-@Autonomous(name = "AutoRedOdom")
+//@Autonomous(name = "AutoRedOdom")
 public class AutoRedOdom extends LinearOpMode {
 
     GoBildaPinpointDriver odo;

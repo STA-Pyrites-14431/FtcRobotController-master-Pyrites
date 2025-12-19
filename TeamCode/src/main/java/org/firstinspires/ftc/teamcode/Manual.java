@@ -104,8 +104,8 @@ public class Manual extends OpMode {
             motorLL.setPower(-1);
             motorLR.setPower(1);
         } else if (gamepad1.x || gamepad2.x){
-            motorLL.setPower(-0.8);
-            motorLR.setPower(0.8);
+            motorLL.setPower(-0.65);
+            motorLR.setPower(0.65);
         } else {
             motorLL.setPower(0);
             motorLR.setPower(0);
@@ -113,10 +113,10 @@ public class Manual extends OpMode {
 
         if (gamepad2.left_bumper || gamepad1.left_bumper) {
             motorI.setPower(1);
-            motorR.setPower(0.6);
+            motorR.setPower(0.4);
         } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
             motorI.setPower(-1);
-            motorR.setPower(-0.6);
+            motorR.setPower(-0.4);
         } else {
             motorI.setPower(0);
             motorR.setPower(0);

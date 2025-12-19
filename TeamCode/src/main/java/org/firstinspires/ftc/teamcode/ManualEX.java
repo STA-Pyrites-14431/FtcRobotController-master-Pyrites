@@ -57,8 +57,8 @@ public class ManualEX extends OpMode {
         ODM.update();
 
         //sets the direction that each wheel will spin
-        motorFL.setInverted(true);
-        motorFR.setInverted(true);
+//        motorFL.setInverted(true);
+//        motorFR.setInverted(true);
 
 
         axial = gamepad1.left_stick_y; //gets input of up and down of left stick for the forward and backwards robot driving
@@ -70,31 +70,15 @@ public class ManualEX extends OpMode {
         Pose2D pos = ODM.getPosition();
         double heading = ODM.getHeading(AngleUnit.DEGREES);
 
-        double cosAngle = Math.cos((Math.PI/2)-heading);
-        double sinAngle = Math.sin((Math.PI/2)-heading);
+        double strafeSpeed = driver.getLeftX();
+        double forwardSpeed = driver.getLeftY();
+        double turnSpeed = driver.getRightX();
 
-        double strafe = -axial * sinAngle + lateral * cosAngle;
-        double forward = axial * cosAngle + lateral * sinAngle;
-
-        double frequency = ODM.getFrequency();
-
-        mec.driveFieldCentric(driver.getLeftX(),driver.getRightX(),driver.getLeftY(),heading);
-
-        /*powerFL = -forward + strafe + yaw;
-        powerFR = -forward + strafe - yaw;
-        powerBL = forward + strafe + yaw;
-        powerBR = forward + strafe - yaw;
-
-
-        //sets the power for the wheels
-        motorFL.set(powerFL);
-        motorFR.set(powerFR);
-        motorBL.set(powerBL);
-        motorBR.set(powerBR);*/
+        mec.driveFieldCentric(strafeSpeed, forwardSpeed,turnSpeed, heading);
 
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
-        telemetry.addData("Heading: ",Math.toDegrees(heading));
+        telemetry.addData("Heading: ",heading);
         telemetry.addData("speedFL: ",motorFL.getVelocity());
         telemetry.addData("speedFR: ",motorFR.getVelocity());
         telemetry.addData("speedBL: ",motorBL.getVelocity());
@@ -105,19 +89,6 @@ public class ManualEX extends OpMode {
 //        telemetry.addData("Strafe Speed: ",strafe);
 //        telemetry.addData("Frequency: ",frequency);
         telemetry.update();
-
-        /*
-       //show the input amount from each stick on driver hub
-        telemetry.addData("Driving Input: ",axial);
-        telemetry.addData("Strafing Input: ",lateral);
-        telemetry.addData("Turning Input: ",yaw);
-
-        //show the power of each wheel as a percentage on driver hub
-        telemetry.addData("Front-Left Wheel Power: ",powerFL);
-        telemetry.addData("Front-Right Wheel Power: ",powerFR);
-        telemetry.addData("Back-Left Wheel Power: ",powerBL);
-        telemetry.addData("Back-Right Wheel Power: ",powerBR);
-         */
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
             motorLL.set(-0.60);

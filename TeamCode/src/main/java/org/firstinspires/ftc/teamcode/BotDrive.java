@@ -65,10 +65,10 @@ public class BotDrive {
         motorBR.setPower(0);
     }
     public void strafeRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
-        motorFL.setPower(-speed);
+        motorFL.setPower(speed);
         motorFR.setPower(speed);
         motorBL.setPower(speed);
-        motorBR.setPower(-speed);
+        motorBR.setPower(speed);
 
         Thread.sleep(t);
 
@@ -78,10 +78,10 @@ public class BotDrive {
         motorBR.setPower(0);
     }
     public void strafeLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
-        motorFL.setPower(speed);
+        motorFL.setPower(-speed);
         motorFR.setPower(-speed);
         motorBL.setPower(-speed);
-        motorBR.setPower(speed);
+        motorBR.setPower(-speed);
 
         Thread.sleep(t);
 
@@ -106,7 +106,7 @@ public class BotDrive {
         motorI.setPower(0);
     }
     public void enableRamp(DcMotor motorR) {
-        motorR.setPower(0.6);
+        motorR.setPower(0.4);
     }
     public void disableRamp(DcMotor motorR) {
         motorR.setPower(0);

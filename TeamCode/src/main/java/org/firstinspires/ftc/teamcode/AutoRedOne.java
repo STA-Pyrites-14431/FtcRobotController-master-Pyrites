@@ -59,15 +59,16 @@ public class AutoRedOne extends LinearOpMode {
         drive.enableRamp(motorR);
         Thread.sleep(1000);
         drive.disableRamp(motorR);
+        Thread.sleep(500);
         drive.turnLeft(motorFL,motorFR,motorBL,motorBR,1,115);
-        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,0.5,250);
+        Thread.sleep(500);
+        drive.strafeRight(motorFL,motorFR,motorBL,motorBR,0.5,250);
+        Thread.sleep(500);
+        drive.turnRight(motorFL,motorFR,motorBL,motorBR,1,170);
 //        drive.forward(motorFL,motorFR,motorBL,motorBR,1,500);
 //        drive.forward(motorFL,motorFR,motorBL,motorBR,1,600);
 //        drive.disableIntake(motorI,servoR1,servoR2,servoR3);
         ODM.update();
-        heading = ODM.getHeading(AngleUnit.DEGREES);
-        telemetry.addData("Heading: ",heading);
-        telemetry.update();
 
     }
 

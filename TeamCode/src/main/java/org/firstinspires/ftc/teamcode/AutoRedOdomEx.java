@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 // field size: 144in x 144in
 
-@Autonomous(name = "AutoRedOdomEx")
+//@Autonomous(name = "AutoRedOdomEx")
 public class AutoRedOdomEx extends LinearOpMode {
 
     GoBildaPinpointDriver ODM;
