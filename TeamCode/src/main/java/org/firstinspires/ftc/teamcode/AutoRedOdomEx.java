@@ -1,8 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.command.OdometrySubsystem;
+import com.arcrobotics.ftclib.command.PurePursuitCommand;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
+import com.arcrobotics.ftclib.purepursuit.Waypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.GeneralWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.InterruptWaypoint;
+import com.arcrobotics.ftclib.purepursuit.waypoints.StartWaypoint;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -25,17 +34,24 @@ public class AutoRedOdomEx extends LinearOpMode {
     MotorEx motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
     double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
     MecanumDrive mec;
+    Pose2D position;
+    Pose2D p1, p2;
+
+    Waypoint w0, w1, w2;
+    OdometrySubsystem m_odometry;
+    PurePursuitCommand ppCommand;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
-        motorFL = new MotorEx(hardwareMap,"motorFL"); //EH0
-        motorFR = new MotorEx(hardwareMap,"motorFR"); //CH0
-        motorBL = new MotorEx(hardwareMap,"motorBL"); //EH1
-        motorBR = new MotorEx(hardwareMap,"motorBR"); //CH1
+        motorFL = new MotorEx(hardwareMap,"motorFL",Motor.GoBILDA.RPM_312); //EH0
+        motorFR = new MotorEx(hardwareMap,"motorFR",Motor.GoBILDA.RPM_312); //CH0
+        motorBL = new MotorEx(hardwareMap,"motorBL",Motor.GoBILDA.RPM_312); //EH1
+        motorBR = new MotorEx(hardwareMap,"motorBR",Motor.GoBILDA.RPM_312); //CH1
         motorLR = new MotorEx(hardwareMap,"motorLR"); //CH2
         motorLL = new MotorEx(hardwareMap,"motorLL"); //EH2
-        motorI = new MotorEx(hardwareMap,"motorI"); //CH3
-        motorR = new MotorEx(hardwareMap,"motorR"); //EH3
+        motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
+        motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
@@ -48,26 +64,63 @@ public class AutoRedOdomEx extends LinearOpMode {
 
         mec = new MecanumDrive(motorFL, motorFR, motorBL, motorBR);
 
-        motorFL.setRunMode(Motor.RunMode.VelocityControl);
-        motorFR.setRunMode(Motor.RunMode.VelocityControl);
-        motorBL.setRunMode(Motor.RunMode.VelocityControl);
-        motorBR.setRunMode(Motor.RunMode.VelocityControl);
+        position = ODM.getPosition();
+        p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,45);
+        p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,90);
 
-        motorFL.setInverted(true);
-        motorFR.setInverted(true);
+//        motorFL.setRunMode(Motor.RunMode.VelocityControl);
+//        motorFR.setRunMode(Motor.RunMode.VelocityControl);
+//        motorBL.setRunMode(Motor.RunMode.VelocityControl);
+//        motorBR.setRunMode(Motor.RunMode.VelocityControl);
 
-        waitForStart();
+        while (opModeIsActive()) {
+            if (!goToPosition(p1)) {
+                continue;
+            }
+            if (!goToPosition(p2)) {
+                continue;
+            }
+            break;
+        }
 
-        motorFL.setVelocity(1);
-        motorFR.setVelocity(1);
-        motorBL.setVelocity(1);
-        motorBR.setVelocity(1);
+    }
 
-        sleep(250);
+    public boolean goToPosition(Pose2D destination) {
+        Pose2D current = ODM.getPosition();
+        double dx, dy;
+        double xPower, yPower;
 
-        motorFL.setVelocity(0);
-        motorFR.setVelocity(0);
-        motorBL.setVelocity(0);
-        motorBR.setVelocity(0);
+        double kLinear = 0.05;
+        double kAngular = 0.5;
+        double positionThreshold = 0.5;
+        double headingThreshold = Math.toRadians(2);
+
+        dx = destination.getX(DistanceUnit.INCH) - current.getX(DistanceUnit.INCH);
+        dy = destination.getY(DistanceUnit.INCH) - current.getY(DistanceUnit.INCH);
+        double distance = Math.hypot(dx, dy);
+
+        xPower = kLinear * dx;
+        yPower = kLinear * dy;
+
+        double headingError = destination.getHeading(AngleUnit.RADIANS) - current.getHeading(AngleUnit.RADIANS);
+        headingError = Math.atan2(Math.sin(headingError),Math.cos(headingError));
+        double yawPower = kAngular * headingError;
+
+        double max = Math.max(Math.abs(xPower),Math.max(Math.abs(yPower),Math.abs(yawPower)));
+        if (max > 1.0) {
+            xPower /= max;
+            yPower /= max;
+            yawPower /= max;
+        }
+        double gyroAngle = ODM.getHeading(AngleUnit.RADIANS);
+        mec.driveFieldCentric(xPower,yPower,yawPower,gyroAngle);
+
+        boolean atTarget = (distance < positionThreshold) && (Math.abs(headingError) < headingThreshold);
+
+        if (distance < positionThreshold && Math.abs(headingError) < headingThreshold) {
+            mec.driveFieldCentric(0,0,0,gyroAngle);
+        }
+
+        return atTarget;
     }
 }

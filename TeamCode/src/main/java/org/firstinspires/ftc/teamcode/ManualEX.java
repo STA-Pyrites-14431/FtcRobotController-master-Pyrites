@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -28,14 +29,14 @@ public class ManualEX extends OpMode {
 
     @Override
     public void init() {
-        motorFL = new MotorEx(hardwareMap,"motorFL"); //EH0
-        motorFR = new MotorEx(hardwareMap,"motorFR"); //CH0
-        motorBL = new MotorEx(hardwareMap,"motorBL"); //EH1
-        motorBR = new MotorEx(hardwareMap,"motorBR"); //CH1
+        motorFL = new MotorEx(hardwareMap,"motorFL",Motor.GoBILDA.RPM_312); //EH0
+        motorFR = new MotorEx(hardwareMap,"motorFR",Motor.GoBILDA.RPM_312); //CH0
+        motorBL = new MotorEx(hardwareMap,"motorBL",Motor.GoBILDA.RPM_312); //EH1
+        motorBR = new MotorEx(hardwareMap,"motorBR",Motor.GoBILDA.RPM_312); //CH1
         motorLR = new MotorEx(hardwareMap,"motorLR"); //CH2
         motorLL = new MotorEx(hardwareMap,"motorLL"); //EH2
-        motorI = new MotorEx(hardwareMap,"motorI"); //CH3
-        motorR = new MotorEx(hardwareMap,"motorR"); //EH3
+        motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
+        motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
@@ -43,7 +44,7 @@ public class ManualEX extends OpMode {
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.resetPosAndIMU();
-        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
+        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.DEGREES,0);
         ODM.setPosition(startingPos);
 
         mec = new MecanumDrive(motorFL, motorFR, motorBL, motorBR);
@@ -61,20 +62,16 @@ public class ManualEX extends OpMode {
 //        motorFR.setInverted(true);
 
 
-        axial = gamepad1.left_stick_y; //gets input of up and down of left stick for the forward and backwards robot driving
-        lateral = gamepad1.left_stick_x; //gets input of left and right of left stick for the robot strafing
-        yaw = gamepad1.right_stick_x; //gets input of left and right of right stick for the robot turning
+        axial = driver.getLeftX(); //gets input of up and down of left stick for the forward and backwards robot driving
+        lateral = driver.getLeftY(); //gets input of left and right of left stick for the robot strafing
+        yaw = driver.getRightX(); //gets input of left and right of right stick for the robot turning
 
 
         //Odometry auto for field centric driving
         Pose2D pos = ODM.getPosition();
         double heading = ODM.getHeading(AngleUnit.DEGREES);
 
-        double strafeSpeed = driver.getLeftX();
-        double forwardSpeed = driver.getLeftY();
-        double turnSpeed = driver.getRightX();
-
-        mec.driveFieldCentric(strafeSpeed, forwardSpeed,turnSpeed, heading);
+        mec.driveFieldCentric(lateral, axial, yaw, heading);
 
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
