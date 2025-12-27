@@ -33,12 +33,12 @@ public class BotDrive {
         motorBL.setPower(0);
         motorBR.setPower(0);
     }
-    public void turnLeft(DcMotor motors[], long t) throws InterruptedException{
+    public void turnLeft(DcMotor[] motors, long t) throws InterruptedException{
 
-        motors[0].setPower(1);
-        motors[1].setPower(-1);
-        motors[2].setPower(-1);
-        motors[3].setPower(1);
+        motors[0].setPower(0.6);
+        motors[1].setPower(-0.6);
+        motors[2].setPower(0.6);
+        motors[3].setPower(-0.6);
 
         Thread.sleep(t);
 

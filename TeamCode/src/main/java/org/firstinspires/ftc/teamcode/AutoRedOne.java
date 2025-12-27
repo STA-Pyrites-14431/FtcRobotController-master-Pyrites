@@ -21,7 +21,7 @@ public class AutoRedOne extends LinearOpMode {
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake
     DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
-    DcMotor motors[] = {motorFL, motorFR, motorBL, motorBR};
+
 
     double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
     double speed = 1.0;
@@ -54,19 +54,18 @@ public class AutoRedOne extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
+        motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
         ODM.resetPosAndIMU();
 
         p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,Math.PI/4);
         p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,Math.PI/2);
-        Pose2D[] path = {p1,p2};
-
-        double lookahead = 6;
-        double maxSpeed = 0.5;
+        DcMotor[] motors = {motorFL, motorFR, motorBL, motorBR};
 
         waitForStart();
-        drive.turnLeft(motors,1800);
+        drive.turnLeft(motors,3310);
 
         double heading = ODM.getHeading(AngleUnit.RADIANS);
     }
