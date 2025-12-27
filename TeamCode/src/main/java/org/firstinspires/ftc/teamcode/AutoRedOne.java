@@ -65,7 +65,9 @@ public class AutoRedOne extends LinearOpMode {
         DcMotor[] motors = {motorFL, motorFR, motorBL, motorBR};
 
         waitForStart();
-        drive.turnLeft(motors,3310);
+        drive.turn(motors,90);
+        Thread.sleep(1000);
+        drive.turn(motors, -90);
 
         double heading = ODM.getHeading(AngleUnit.RADIANS);
     }
