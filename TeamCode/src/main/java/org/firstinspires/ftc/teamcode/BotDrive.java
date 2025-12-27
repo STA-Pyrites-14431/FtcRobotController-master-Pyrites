@@ -33,24 +33,21 @@ public class BotDrive {
         motorBL.setPower(0);
         motorBR.setPower(0);
     }
-    public void turnLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long d) throws InterruptedException{
+    public void turnLeft(DcMotor motors[], long t) throws InterruptedException{
 
-        long t = (long)((-(8.89092*Math.pow(10,-8))*Math.pow(d,4))+(0.000038866*Math.pow(d,3))+(0.00133745*Math.pow(d,2))+(3.62963*d)+(4.84676*Math.pow(10,-27)));
-        motorFL.setPower(speed);
-        motorFR.setPower(-speed);
-        motorBL.setPower(-speed);
-        motorBR.setPower(speed);
+        motors[0].setPower(1);
+        motors[1].setPower(-1);
+        motors[2].setPower(-1);
+        motors[3].setPower(1);
 
         Thread.sleep(t);
 
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
+        motors[0].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+        motors[3].setPower(0);
     }
-    public void turnRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long d) throws InterruptedException{
-
-        long t = (long)((-(8.89092*Math.pow(10,-8))*Math.pow(d,4))+(0.000038866*Math.pow(d,3))+(0.00133745*Math.pow(d,2))+(3.62963*d)+(4.84676*Math.pow(10,-27)));
+    public void turnRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
 
         motorFL.setPower(-speed);
         motorFR.setPower(speed);

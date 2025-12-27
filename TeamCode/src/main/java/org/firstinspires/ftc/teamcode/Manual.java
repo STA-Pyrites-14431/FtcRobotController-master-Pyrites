@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
@@ -19,7 +20,8 @@ public class Manual extends OpMode {
     //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
     DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
 
-    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
+    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max, volts, distance, maxV, maxD;
+    AnalogInput laser;
 
     @Override
     public void init() {
@@ -31,11 +33,17 @@ public class Manual extends OpMode {
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
         motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
+        laser = hardwareMap.get(AnalogInput.class, "LIDAR");
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
@@ -46,17 +54,22 @@ public class Manual extends OpMode {
         Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
         ODM.setPosition(startingPos);
 
+        maxV = laser.getMaxVoltage();
+        maxD = 1000.0;
+
     }
 
     @Override
     public void loop() {
 
         ODM.update();
+        volts = laser.getVoltage();
+        distance = (volts/maxV)*maxD;
 
         //sets the direction that each wheel will spin
         motorFL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorFR.setDirection(DcMotorSimple.Direction.REVERSE);
-        motorBL.setDirection(DcMotorSimple.Direction.FORWARD);
+        motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
@@ -77,9 +90,9 @@ public class Manual extends OpMode {
 
         double frequency = ODM.getFrequency();
 
-        powerFL = -forward + strafe + yaw;
+        powerFL = forward + strafe + yaw;
         powerFR = -forward + strafe - yaw;
-        powerBL = forward + strafe + yaw;
+        powerBL = -forward + strafe + yaw;
         powerBR = forward + strafe - yaw;
 
 
@@ -94,18 +107,19 @@ public class Manual extends OpMode {
         telemetry.addData("Heading: ",Math.toDegrees(heading));
         telemetry.addData("Forward Speed: ",forward);
         telemetry.addData("Strafe Speed: ",strafe);
-        telemetry.addData("Frequency: ",frequency);
+        telemetry.addData("Distance: ",distance);
+        telemetry.addData("Voltage: ",laser.getVoltage());
         telemetry.update();
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(-0.45);
-            motorLR.setPower(0.45);
+            motorLL.setPower(0.40);
+            motorLR.setPower(-0.40);
         } else if (gamepad1.y || gamepad2.y){ //Turn off launcher
-            motorLL.setPower(-1);
-            motorLR.setPower(1);
+            motorLL.setPower(1);
+            motorLR.setPower(-1);
         } else if (gamepad1.x || gamepad2.x){
-            motorLL.setPower(-0.65);
-            motorLR.setPower(0.65);
+            motorLL.setPower(0.65);
+            motorLR.setPower(-0.65);
         } else {
             motorLL.setPower(0);
             motorLR.setPower(0);

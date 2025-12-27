@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 // field size: 144in x 144in
 
-//@Autonomous(name = "AutoRedOdomEx")
+@Autonomous(name = "AutoRedOdomEx")
 public class AutoRedOdomEx extends LinearOpMode {
 
     GoBildaPinpointDriver ODM;
@@ -38,8 +38,6 @@ public class AutoRedOdomEx extends LinearOpMode {
     Pose2D p1, p2;
 
     Waypoint w0, w1, w2;
-    OdometrySubsystem m_odometry;
-    PurePursuitCommand ppCommand;
 
 
     @Override
@@ -55,23 +53,25 @@ public class AutoRedOdomEx extends LinearOpMode {
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
-        ODM.setOffsets(0,0, DistanceUnit.INCH);
+        ODM.setOffsets(0,0, DistanceUnit.MM);
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.resetPosAndIMU();
-        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
+        Pose2D startingPos = new Pose2D(DistanceUnit.MM,0,0, AngleUnit.RADIANS,0);
         ODM.setPosition(startingPos);
 
         mec = new MecanumDrive(motorFL, motorFR, motorBL, motorBR);
 
         position = ODM.getPosition();
-        p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,45);
-        p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,90);
+        p1 = new Pose2D(DistanceUnit.MM,100,0,AngleUnit.RADIANS,45);
+        p2 = new Pose2D(DistanceUnit.MM,50,50,AngleUnit.RADIANS,90);
 
 //        motorFL.setRunMode(Motor.RunMode.VelocityControl);
 //        motorFR.setRunMode(Motor.RunMode.VelocityControl);
 //        motorBL.setRunMode(Motor.RunMode.VelocityControl);
 //        motorBR.setRunMode(Motor.RunMode.VelocityControl);
+
+        waitForStart();
 
         while (opModeIsActive()) {
             if (!goToPosition(p1)) {
@@ -95,8 +95,8 @@ public class AutoRedOdomEx extends LinearOpMode {
         double positionThreshold = 0.5;
         double headingThreshold = Math.toRadians(2);
 
-        dx = destination.getX(DistanceUnit.INCH) - current.getX(DistanceUnit.INCH);
-        dy = destination.getY(DistanceUnit.INCH) - current.getY(DistanceUnit.INCH);
+        dx = destination.getX(DistanceUnit.MM) - current.getX(DistanceUnit.MM);
+        dy = destination.getY(DistanceUnit.MM) - current.getY(DistanceUnit.MM);
         double distance = Math.hypot(dx, dy);
 
         xPower = kLinear * dx;
