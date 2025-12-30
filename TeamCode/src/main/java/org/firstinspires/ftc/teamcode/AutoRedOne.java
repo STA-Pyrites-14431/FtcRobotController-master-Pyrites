@@ -26,8 +26,8 @@ public class AutoRedOne extends LinearOpMode {
     double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
     double speed = 1.0;
 
-    Pose2D position;
-    Pose2D p1, p2;
+//    Pose2D position;
+//    Pose2D p1, p2;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -46,8 +46,6 @@ public class AutoRedOne extends LinearOpMode {
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
-
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -58,17 +56,57 @@ public class AutoRedOne extends LinearOpMode {
         motorBL.setDirection(DcMotorSimple.Direction.REVERSE);
         motorBR.setDirection(DcMotorSimple.Direction.FORWARD);
 
+        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
         ODM.resetPosAndIMU();
 
-        p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,Math.PI/4);
-        p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,Math.PI/2);
+//        p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,Math.PI/4);
+//        p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,Math.PI/2);
         DcMotor[] motors = {motorFL, motorFR, motorBL, motorBR};
+        double heading = ODM.getHeading(AngleUnit.RADIANS);
+        double speed = 0.6;
 
         waitForStart();
-        drive.turn(motors,90);
-        Thread.sleep(1000);
-        drive.turn(motors, -90);
+        while (opModeIsActive()) {
+//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+//            telemetry.update();
+//            turn(motors,90);
+//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+//            telemetry.update();
+//            sleep(1000);
+//            turn(motors, -90);
+//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+//            telemetry.update();
+//            sleep(10000);
+            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+            drive.turnOdom(motors,ODM,90);
+            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+            sleep(2000);
+            drive.turnOdom(motors,ODM,0);
+            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+            telemetry.update();
+            break;
+        }
+    }
+    public void turn(DcMotor[] motors, long d) throws InterruptedException{
+        double speed = 0.6;
+        if (d < 0) speed *= -1;
+        d = Math.abs(d);
+        double t = -(4.28763*Math.pow(10,-8))*Math.pow(d,4) + 0.0000451483*Math.pow(d,3) - 0.0155514*Math.pow(d,2) + 9.26416*d - 75.36675;
 
-        double heading = ODM.getHeading(AngleUnit.RADIANS);
+        motors[0].setPower(speed);
+        motors[1].setPower(-speed);
+        motors[2].setPower(speed);
+        motors[3].setPower(-speed);
+        ODM.update();
+
+        Thread.sleep((long)t);
+
+        motors[0].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+        motors[3].setPower(0);
+        ODM.update();
     }
 }

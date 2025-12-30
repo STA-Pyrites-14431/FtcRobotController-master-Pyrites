@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.function.InterruptableThrowingRunnable;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class BotDrive {
     public void forward(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException {
@@ -46,6 +50,40 @@ public class BotDrive {
 
         Thread.sleep((long)t);
 
+        motors[0].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+        motors[3].setPower(0);
+    }
+    public void driveOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int xDest, int yDest) {
+        double speed = 0.6;
+        while ((!(ODM.getPosX(DistanceUnit.INCH)>xDest-0.5 && ODM.getPosX(DistanceUnit.INCH)<xDest+0.5) && !(ODM.getPosY(DistanceUnit.INCH)<yDest-0.5 && ODM.getPosY(DistanceUnit.INCH)>yDest+0.5))) {
+            motors[0].setPower(speed);
+            motors[1].setPower(speed);
+            motors[2].setPower(speed);
+            motors[3].setPower(speed);
+            ODM.update();
+        }
+        motors[0].setPower(0);
+        motors[1].setPower(0);
+        motors[2].setPower(0);
+        motors[3].setPower(0);
+    }
+    public void turnOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int d) {
+        d*=-1;
+        double speed = 0.4;
+        double heading = ODM.getHeading(AngleUnit.DEGREES);
+        if (d > ODM.getHeading(AngleUnit.DEGREES)) {
+            speed *= -1;
+        }
+        while (!(heading>d-0.2 && ODM.getHeading(AngleUnit.DEGREES)<d+0.2)) {
+            motors[0].setPower(speed);
+            motors[1].setPower(-speed);
+            motors[2].setPower(speed);
+            motors[3].setPower(-speed);
+            ODM.update();
+            heading = ODM.getHeading(AngleUnit.DEGREES);
+        }
         motors[0].setPower(0);
         motors[1].setPower(0);
         motors[2].setPower(0);
