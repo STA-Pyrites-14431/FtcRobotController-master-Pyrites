@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -24,59 +26,63 @@ public class BotDrive {
         motorBR.setPower(0);
 
     }
-    public void backward(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
-        motorFL.setPower(speed);
-        motorFR.setPower(speed);
-        motorBL.setPower(-speed);
-        motorBR.setPower(-speed);
+    public void strafeOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int dy) {
+        double speed;
+        double posy = ODM.getPosY(DistanceUnit.INCH);
+//        ODM.resetPosAndIMU();
 
-        Thread.sleep(t);
-
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-    }
-    public void turn(DcMotor[] motors, long d) throws InterruptedException{
-        double speed = 0.6;
-        if (d < 0) speed *= -1;
-        d = Math.abs(d);
-        double t = -(4.28763*Math.pow(10,-8))*Math.pow(d,4) + 0.0000451483*Math.pow(d,3) - 0.0155514*Math.pow(d,2) + 9.26416*d - 75.36675;
-
-        motors[0].setPower(speed);
-        motors[1].setPower(-speed);
-        motors[2].setPower(speed);
-        motors[3].setPower(-speed);
-
-        Thread.sleep((long)t);
-
+        while (!(posy>dy-0.5 && posy<dy+0.5)) {
+            if (dy < posy) {
+                speed = -0.5;
+            } else {
+                speed = 0.5;
+            }
+            motors[0].setPower(speed);
+            motors[1].setPower(-speed);
+            motors[2].setPower(-speed);
+            motors[3].setPower(speed);
+            ODM.update();
+            posy = ODM.getPosY(DistanceUnit.INCH);
+        }
         motors[0].setPower(0);
         motors[1].setPower(0);
         motors[2].setPower(0);
         motors[3].setPower(0);
     }
-    public void driveOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int xDest, int yDest) {
-        double speed = 0.6;
-        while ((!(ODM.getPosX(DistanceUnit.INCH)>xDest-0.5 && ODM.getPosX(DistanceUnit.INCH)<xDest+0.5) && !(ODM.getPosY(DistanceUnit.INCH)<yDest-0.5 && ODM.getPosY(DistanceUnit.INCH)>yDest+0.5))) {
+    public void driveOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int dx) {
+        double speed;
+        double posx = ODM.getPosX(DistanceUnit.INCH);
+//        ODM.resetPosAndIMU();
+
+        while (!(posx>dx-0.5 && posx<dx+0.5)) {
+            if (dx < posx) {
+                speed = -0.5;
+            } else {
+                speed = 0.5;
+            }
             motors[0].setPower(speed);
             motors[1].setPower(speed);
             motors[2].setPower(speed);
             motors[3].setPower(speed);
             ODM.update();
+            posx = ODM.getPosX(DistanceUnit.INCH);
         }
         motors[0].setPower(0);
         motors[1].setPower(0);
         motors[2].setPower(0);
         motors[3].setPower(0);
     }
-    public void turnOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, int d) {
+    public void turnOdom(DcMotor[] motors, GoBildaPinpointDriver ODM, double d) {
         d*=-1;
-        double speed = 0.4;
+        double speed;
         double heading = ODM.getHeading(AngleUnit.DEGREES);
-        if (d > ODM.getHeading(AngleUnit.DEGREES)) {
-            speed *= -1;
-        }
-        while (!(heading>d-0.2 && ODM.getHeading(AngleUnit.DEGREES)<d+0.2)) {
+
+        while (!(heading>d-0.2 && heading<d+0.2)) {
+            if (d > heading) {
+                speed = -0.4;
+            } else {
+                speed = 0.4;
+            }
             motors[0].setPower(speed);
             motors[1].setPower(-speed);
             motors[2].setPower(speed);
@@ -89,33 +95,6 @@ public class BotDrive {
         motors[2].setPower(0);
         motors[3].setPower(0);
     }
-    public void strafeRight(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
-        motorFL.setPower(speed);
-        motorFR.setPower(speed);
-        motorBL.setPower(speed);
-        motorBR.setPower(speed);
-
-        Thread.sleep(t);
-
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-    }
-    public void strafeLeft(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, double speed, long t) throws InterruptedException{
-        motorFL.setPower(-speed);
-        motorFR.setPower(-speed);
-        motorBL.setPower(-speed);
-        motorBR.setPower(-speed);
-
-        Thread.sleep(t);
-
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-    }
-
     public void enableLaunch(DcMotor motorLR, DcMotor motorLL, double power) throws InterruptedException {
         motorLR.setPower(power);
         motorLL.setPower(-power);

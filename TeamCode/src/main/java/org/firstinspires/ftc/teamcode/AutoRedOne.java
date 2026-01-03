@@ -45,6 +45,10 @@ public class AutoRedOne extends LinearOpMode {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -58,55 +62,51 @@ public class AutoRedOne extends LinearOpMode {
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
         ODM.resetPosAndIMU();
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
-//        p1 = new Pose2D(DistanceUnit.INCH,36,0,AngleUnit.RADIANS,Math.PI/4);
-//        p2 = new Pose2D(DistanceUnit.INCH,12,12,AngleUnit.RADIANS,Math.PI/2);
+        Pose2D start = new Pose2D(DistanceUnit.INCH,-60,24, AngleUnit.DEGREES,0);
+
         DcMotor[] motors = {motorFL, motorFR, motorBL, motorBR};
-        double heading = ODM.getHeading(AngleUnit.RADIANS);
         double speed = 0.6;
+        double closePower = 0.45;
+        double farPower = 0.55;
 
         waitForStart();
+        ODM.setPosition(start);
         while (opModeIsActive()) {
-//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
-//            telemetry.update();
-//            turn(motors,90);
-//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
-//            telemetry.update();
-//            sleep(1000);
-//            turn(motors, -90);
-//            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
-//            telemetry.update();
-//            sleep(10000);
-            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
-            telemetry.update();
-            drive.turnOdom(motors,ODM,90);
-            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
-            telemetry.update();
+            drive.driveOdom(motors,ODM,-48);
+            sleep(200);
+//            resetODM();
+            drive.strafeOdom(motors,ODM,12);
+            sleep(200);
+//            resetODM();
+            drive.driveOdom(motors,ODM,24);
+            sleep(200);
+//            resetODM();
+            drive.turnOdom(motors,ODM,-135);
+            drive.enableLaunch(motorLR,motorLL,closePower);
+            sleep(1250);
+            drive.enableRamp(motorR);
+            drive.enableIntake(motorI);
             sleep(2000);
-            drive.turnOdom(motors,ODM,0);
-            telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
+            drive.disableIntake(motorI);
+            drive.disableRamp(motorR);
+            drive.disableLaunch(motorLR,motorLL);
+            drive.turnOdom(motors,ODM,90);
+//            resetODM();
+//            drive.driveOdom(motors,ODM,12);
+//            sleep(200);
+////            resetODM();
+//            drive.driveOdom(motors,ODM,-12);
+
+            telemetry.addData("X Pos: ",ODM.getPosX(DistanceUnit.INCH));
+            telemetry.addData("Y Pos: ",ODM.getPosY(DistanceUnit.INCH));
             telemetry.update();
+//            sleep(5000);
             break;
         }
     }
-    public void turn(DcMotor[] motors, long d) throws InterruptedException{
-        double speed = 0.6;
-        if (d < 0) speed *= -1;
-        d = Math.abs(d);
-        double t = -(4.28763*Math.pow(10,-8))*Math.pow(d,4) + 0.0000451483*Math.pow(d,3) - 0.0155514*Math.pow(d,2) + 9.26416*d - 75.36675;
-
-        motors[0].setPower(speed);
-        motors[1].setPower(-speed);
-        motors[2].setPower(speed);
-        motors[3].setPower(-speed);
-        ODM.update();
-
-        Thread.sleep((long)t);
-
-        motors[0].setPower(0);
-        motors[1].setPower(0);
-        motors[2].setPower(0);
-        motors[3].setPower(0);
-        ODM.update();
+    public void resetODM() {
+        ODM.setPosition(new Pose2D(DistanceUnit.INCH,0,0,AngleUnit.DEGREES,0));
     }
 }

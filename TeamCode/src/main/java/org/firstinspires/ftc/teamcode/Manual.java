@@ -44,11 +44,16 @@ public class Manual extends OpMode {
         motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorLR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorI.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motorR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
         ODM.setOffsets(0,0, DistanceUnit.INCH);
-        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.resetPosAndIMU();
         Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
@@ -112,14 +117,14 @@ public class Manual extends OpMode {
         telemetry.update();
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(0.40);
-            motorLR.setPower(-0.40);
+            motorLL.setPower(0.45);
+            motorLR.setPower(-0.45);
         } else if (gamepad1.y || gamepad2.y){ //Turn off launcher
             motorLL.setPower(1);
             motorLR.setPower(-1);
         } else if (gamepad1.x || gamepad2.x){
-            motorLL.setPower(0.65);
-            motorLR.setPower(-0.65);
+            motorLL.setPower(0.55);
+            motorLR.setPower(-0.55);
         } else {
             motorLL.setPower(0);
             motorLR.setPower(0);
@@ -127,12 +132,16 @@ public class Manual extends OpMode {
 
         if (gamepad2.left_bumper || gamepad1.left_bumper) {
             motorI.setPower(1);
-            motorR.setPower(0.4);
         } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
             motorI.setPower(-1);
-            motorR.setPower(-0.4);
         } else {
             motorI.setPower(0);
+        }
+        if (gamepad2.dpad_up || gamepad1.dpad_up) {
+            motorR.setPower(0.5);
+        } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
+            motorR.setPower(-0.5);
+        } else {
             motorR.setPower(0);
         }
 

@@ -41,7 +41,7 @@ public class ForwardBlue extends LinearOpMode {
         waitForStart();
 
 //        drive.enableIntake(motorI,servoR1,servoR2,servoR3);
-        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,1,400);
+//        drive.strafeLeft(motorFL,motorFR,motorBL,motorBR,1,400);
 
     }
 }
