@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -23,9 +24,11 @@ public class ManualEX extends OpMode {
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
     MotorEx motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
-    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
+    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max, volts, distance, maxV, maxD;
+    AnalogInput laser;
     MecanumDrive mec;
     GamepadEx driver;
+    double lP;
 
     @Override
     public void init() {
@@ -38,32 +41,50 @@ public class ManualEX extends OpMode {
         motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
         motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
 
+        laser = hardwareMap.get(AnalogInput.class, "LIDAR");
+
+        motorFL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorLL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorI.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
         ODM.setOffsets(0,0, DistanceUnit.INCH);
-        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD,GoBildaPinpointDriver.EncoderDirection.FORWARD);
         ODM.resetPosAndIMU();
-        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.DEGREES,0);
+        Pose2D startingPos = new Pose2D(DistanceUnit.INCH,0,0, AngleUnit.RADIANS,0);
         ODM.setPosition(startingPos);
 
-        mec = new MecanumDrive(motorFL, motorFR, motorBL, motorBR);
+        maxV = laser.getMaxVoltage();
+        maxD = 1000.0;
 
+        mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
         driver = new GamepadEx(gamepad1);
+        lP = 0;
     }
 
     @Override
     public void loop() {
 
         ODM.update();
+        volts = laser.getVoltage();
+        distance = (volts/maxV)*maxD;
 
         //sets the direction that each wheel will spin
-//        motorFL.setInverted(true);
-//        motorFR.setInverted(true);
+        motorBR.setInverted(true);
+        motorBL.setInverted(true);
+        motorFL.setInverted(true);
 
-
-        axial = driver.getLeftX(); //gets input of up and down of left stick for the forward and backwards robot driving
-        lateral = driver.getLeftY(); //gets input of left and right of left stick for the robot strafing
+        axial = driver.getLeftY(); //gets input of up and down of left stick for the forward and backwards robot driving
+        lateral = driver.getLeftX(); //gets input of left and right of left stick for the robot strafing
         yaw = driver.getRightX(); //gets input of left and right of right stick for the robot turning
 
 
@@ -73,36 +94,46 @@ public class ManualEX extends OpMode {
 
         mec.driveFieldCentric(lateral, axial, yaw, heading);
 
+        if (gamepad1.dpad_right && lP <= 1) {
+            lP += 0.01;
+        } else if (gamepad1.dpad_left && lP > 0) {
+            lP -= 0.01;
+        }
+
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
-        telemetry.addData("Heading: ",heading);
-        telemetry.addData("speedFL: ",motorFL.getVelocity());
-        telemetry.addData("speedFR: ",motorFR.getVelocity());
-        telemetry.addData("speedBL: ",motorBL.getVelocity());
-        telemetry.addData("speedBR: ",motorBR.getVelocity());
-        telemetry.addData("launchSpeed: ",motorLR.getVelocity());
-
-//        telemetry.addData("Forward Speed: ",forward);
-//        telemetry.addData("Strafe Speed: ",strafe);
-//        telemetry.addData("Frequency: ",frequency);
+        telemetry.addData("Heading: ",Math.toDegrees(heading));
+        telemetry.addData("Distance: ",distance);
+        telemetry.addData("Voltage: ",laser.getVoltage());
+        telemetry.addData("LaunchPower: ",lP);
         telemetry.update();
 
-        if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.set(-0.60);
-            motorLR.set(0.60);
-        } else { //Turn off launcher
+        if (gamepad2.a || gamepad1.a) { //Turn on launcher
+            motorLL.set(lP);
+            motorLR.set(-lP);
+        } else if (gamepad1.y || gamepad2.y) {
+            motorLL.set(1);
+            motorLR.set(-1);
+        } else if (gamepad1.x || gamepad2.x) {
+            motorLL.set(0.5);
+            motorLR.set(-0.5);
+        } else {
             motorLL.set(0);
             motorLR.set(0);
         }
 
         if (gamepad2.left_bumper || gamepad1.left_bumper) {
             motorI.set(1);
-            motorR.set(0.6);
         } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
             motorI.set(-1);
-            motorR.set(-0.6);
         } else {
             motorI.set(0);
+        }
+        if (gamepad2.dpad_up || gamepad1.dpad_up) {
+            motorR.set(0.5);
+        } else if (gamepad2.dpad_down || gamepad1.dpad_down) {
+            motorR.set(-0.5);
+        } else {
             motorR.set(0);
         }
 

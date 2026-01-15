@@ -22,13 +22,6 @@ public class AutoRedOne extends LinearOpMode {
     //LL = Launcher Left, LR = Launcher Right, I = Intake
     DcMotor motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
 
-
-    double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max;
-    double speed = 1.0;
-
-//    Pose2D position;
-//    Pose2D p1, p2;
-
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -68,8 +61,8 @@ public class AutoRedOne extends LinearOpMode {
 
         DcMotor[] motors = {motorFL, motorFR, motorBL, motorBR};
         double speed = 0.6;
-        double closePower = 0.45;
-        double farPower = 0.55;
+        double closePower = 0.40;
+        double farPower = 0.50;
 
         waitForStart();
         ODM.setPosition(start);

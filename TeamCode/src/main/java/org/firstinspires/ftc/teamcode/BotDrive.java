@@ -31,7 +31,7 @@ public class BotDrive {
         double posy = ODM.getPosY(DistanceUnit.INCH);
 //        ODM.resetPosAndIMU();
 
-        while (!(posy>dy-0.5 && posy<dy+0.5)) {
+        while (!(posy>dy-0.3 && posy<dy+0.3)) {
             if (dy < posy) {
                 speed = -0.5;
             } else {
@@ -54,7 +54,7 @@ public class BotDrive {
         double posx = ODM.getPosX(DistanceUnit.INCH);
 //        ODM.resetPosAndIMU();
 
-        while (!(posx>dx-0.5 && posx<dx+0.5)) {
+        while (!(posx>dx-0.3 && posx<dx+0.3)) {
             if (dx < posx) {
                 speed = -0.5;
             } else {

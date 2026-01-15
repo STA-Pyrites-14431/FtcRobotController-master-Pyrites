@@ -33,6 +33,7 @@ public class Manual extends OpMode {
         motorLL = hardwareMap.get(DcMotor.class,"motorLL"); //EH2
         motorI = hardwareMap.get(DcMotor.class,"motorI"); //CH3
         motorR = hardwareMap.get(DcMotor.class,"motorR"); //EH3
+
         laser = hardwareMap.get(AnalogInput.class, "LIDAR");
 
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -117,14 +118,14 @@ public class Manual extends OpMode {
         telemetry.update();
 
         if (gamepad2.right_bumper || gamepad1.right_bumper) { //Turn on launcher
-            motorLL.setPower(0.45);
-            motorLR.setPower(-0.45);
+            motorLL.setPower(0.40);
+            motorLR.setPower(-0.40);
         } else if (gamepad1.y || gamepad2.y){ //Turn off launcher
             motorLL.setPower(1);
             motorLR.setPower(-1);
         } else if (gamepad1.x || gamepad2.x){
-            motorLL.setPower(0.55);
-            motorLR.setPower(-0.55);
+            motorLL.setPower(0.50);
+            motorLR.setPower(-0.50);
         } else {
             motorLL.setPower(0);
             motorLR.setPower(0);
