@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class ManualEX extends OpMode {
 
     GoBildaPinpointDriver ODM;
+    FieldOdometry odom;
 
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
@@ -40,6 +41,8 @@ public class ManualEX extends OpMode {
         motorLL = new MotorEx(hardwareMap,"motorLL"); //EH2
         motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
         motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
+
+        odom = new FieldOdometry(hardwareMap,"ODM");
 
         laser = hardwareMap.get(AnalogInput.class, "LIDAR");
 
@@ -75,6 +78,7 @@ public class ManualEX extends OpMode {
     public void loop() {
 
         ODM.update();
+        odom.update();
         volts = laser.getVoltage();
         distance = (volts/maxV)*maxD;
 
@@ -100,9 +104,14 @@ public class ManualEX extends OpMode {
             lP -= 0.01;
         }
 
+        Pose2D OP = odom.getFieldPose();
+
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
+        telemetry.addData("x-Pos: ",OP.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
+        telemetry.addData("y-Pos: ",OP.getY(DistanceUnit.INCH));
         telemetry.addData("Heading: ",Math.toDegrees(heading));
+        telemetry.addData("h-heading: ",OP.getHeading(AngleUnit.DEGREES));
         telemetry.addData("Distance: ",distance);
         telemetry.addData("Voltage: ",laser.getVoltage());
         telemetry.addData("LaunchPower: ",lP);
