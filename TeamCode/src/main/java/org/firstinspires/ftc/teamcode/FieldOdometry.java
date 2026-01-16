@@ -28,23 +28,24 @@ public class FieldOdometry {
         double heading = pinpoint.getHeading(AngleUnit.DEGREES);
 
         double fieldHeading = heading+originHeading;
+        double fHR = Math.toRadians(fieldHeading);
 
-        double cos = Math.cos(fieldHeading);
-        double sin = Math.sin(fieldHeading);
+        double cos = Math.cos(fHR);
+        double sin = Math.sin(fHR);
 
         double fieldX = (rawX*cos-rawY*sin) + originX;
         double fieldY = (rawX*sin+rawY*cos) + originY;
 
         return new Pose2D(DistanceUnit.INCH,fieldX,fieldY,AngleUnit.DEGREES,fieldHeading);
     }
-    public double getY() {
-        return getFieldPose().getY(DistanceUnit.INCH);
+    public double getY(DistanceUnit d) {
+        return getFieldPose().getY(d);
     }
-    public double getX() {
-        return getFieldPose().getX(DistanceUnit.INCH);
+    public double getX(DistanceUnit d) {
+        return getFieldPose().getX(d);
     }
-    public double getHeading() {
-        return getFieldPose().getHeading(AngleUnit.DEGREES);
+    public double getHeading(AngleUnit a) {
+        return getFieldPose().getHeading(a);
     }
 
     public void resetOrigintoCurrent() {

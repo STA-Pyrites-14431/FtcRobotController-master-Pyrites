@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 @Autonomous(name = "AutoRedOneEX")
 public class AutoRedOneEX extends LinearOpMode {
 
-    BotDriveEX driveEx = new BotDriveEX();
+    BotDriveEX driveEx, drive;
 //    GoBildaPinpointDriver ODM;
     FieldOdometry ODM;
 
@@ -60,16 +60,19 @@ public class AutoRedOneEX extends LinearOpMode {
         double closePower = 0.40;
         double farPower = 0.50;
 
+        drive = new BotDriveEX(motors,telemetry);
+        driveEx = new BotDriveEX(mec,ODM,telemetry);
+
         waitForStart();
 //        ODM.setFieldOrigin(start);
         while (opModeIsActive()) {
-            turnOdomMec(90);
+            driveEx.turnOdomMec(90);
             sleep(200);
-            strafeOdomMec(60);
+            driveEx.strafeOdomMec(60);
             sleep(2000);
-            strafeOdomMec(0);
+            driveEx.strafeOdomMec(0);
             sleep(200);
-            turnOdomMec(0);
+            driveEx.turnOdomMec(0);
             /*driveEx.driveOdomMec(mec,ODM,48);
             sleep(200);
             driveEx.turnOdomMec(mec,ODM,90);
@@ -118,67 +121,5 @@ public class AutoRedOneEX extends LinearOpMode {
             break;
         }
 
-    }
-    public void strafeOdomMec(int dy){
-        double speed;
-        double posy = ODM.getY();
-//
-//        if (ODM.getHeading(AngleUnit.DEGREES)>90-2 || ODM.getHeading(AngleUnit.DEGREES)<90+2) {
-//
-//        }
-
-        while (!(posy>dy-0.3 && posy<dy+0.3)) {
-            if (dy < posy) {
-                speed = -0.5;
-            } else {
-                speed = 0.5;
-            }
-            mec.driveFieldCentric(speed,0,0,ODM.getHeading());
-            ODM.update();
-            posy = ODM.getY();
-            telUp();
-        }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading());
-    }
-    public void driveOdomMec(int dx) {
-        double speed;
-        double posx = ODM.getX();
-
-        while (!(posx>dx-0.3 && posx<dx+0.3)) {
-            if (dx < posx) {
-                speed = -0.1;
-            } else {
-                speed = 0.1;
-            }
-            mec.driveFieldCentric(0,speed,0,ODM.getHeading());
-            ODM.update();
-            posx = ODM.getX();
-            telUp();
-        }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading());
-    }
-    public void turnOdomMec(double d) {
-        d*=-1;
-        double speed;
-        double heading = ODM.getHeading();
-
-        while (!(heading>d-0.1 && heading<d+0.1)) {
-            if (d > heading) {
-                speed = -0.4;
-            } else {
-                speed = 0.4;
-            }
-            mec.driveFieldCentric(0,0,speed,heading);
-            ODM.update();
-            heading = ODM.getHeading();
-            telUp();
-        }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading());
-    }
-    public void telUp() {
-        telemetry.addData("XPos: ",ODM.getX());
-        telemetry.addData("YPos: ",ODM.getY());
-        telemetry.addData("Heading: ",ODM.getHeading());
-        telemetry.update();
     }
 }
