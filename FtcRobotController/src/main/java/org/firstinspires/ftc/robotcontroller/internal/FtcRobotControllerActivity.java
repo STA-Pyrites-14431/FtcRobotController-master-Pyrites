@@ -716,12 +716,12 @@ public class FtcRobotControllerActivity extends Activity
     RobotConfigFile file = cfgFileMgr.getActiveConfigAndUpdateUI();
     HardwareFactory hardwareFactory = new HardwareFactory(context);
     try {
-      hardwareFactory.setXmlPullParser(file.getXml());
+      hardwareFactory.setXmlPullParser(file.getPosXml());
     } catch (FileNotFoundException | XmlPullParserException e) {
       RobotLog.ww(TAG, e, "Unable to set configuration file %s. Falling back on noConfig.", file.getName());
       file = RobotConfigFile.noConfig(cfgFileMgr);
       try {
-        hardwareFactory.setXmlPullParser(file.getXml());
+        hardwareFactory.setXmlPullParser(file.getPosXml());
         cfgFileMgr.setActiveConfigAndUpdateUI(false, file);
       } catch (FileNotFoundException | XmlPullParserException e1) {
         RobotLog.ee(TAG, e1, "Failed to fall back on noConfig");

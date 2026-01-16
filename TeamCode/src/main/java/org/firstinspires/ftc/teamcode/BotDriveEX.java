@@ -14,7 +14,7 @@ import java.lang.reflect.Field;
 public class BotDriveEX {
 
     private MecanumDrive mec;
-    private FieldOdometry ODM;
+    private GoBildaPinpointDriver ODM;
     private MotorEx[] motors;
     private Telemetry telemetry;
 
@@ -22,7 +22,7 @@ public class BotDriveEX {
         this.motors = motors;
         telemetry = tel;
     }
-    public BotDriveEX(MecanumDrive mec, FieldOdometry ODM, Telemetry tel) {
+    public BotDriveEX(MecanumDrive mec, GoBildaPinpointDriver ODM, Telemetry tel) {
         this.mec = mec;
         this.ODM = ODM;
         telemetry = tel;
@@ -43,7 +43,7 @@ public class BotDriveEX {
     }
     public void strafeOdom(int dy) {
         double speed;
-        double posy = ODM.getY(DistanceUnit.INCH);
+        double posy = ODM.getPosY(DistanceUnit.INCH);
 //        ODM.resetPosAndIMU();
 
         while (!(posy>dy-0.3 && posy<dy+0.3)) {
@@ -57,7 +57,7 @@ public class BotDriveEX {
             motors[2].set(-speed);
             motors[3].set(speed);
             ODM.update();
-            posy = ODM.getY(DistanceUnit.INCH);
+            posy = ODM.getPosY(DistanceUnit.INCH);
         }
         motors[0].set(0);
         motors[1].set(0);
@@ -66,7 +66,7 @@ public class BotDriveEX {
     }
     public void driveOdom(int dx) {
         double speed;
-        double posx = ODM.getX(DistanceUnit.INCH);
+        double posx = ODM.getPosX(DistanceUnit.INCH);
 //        ODM.resetPosAndIMU();
 
         while (!(posx>dx-0.3 && posx<dx+0.3)) {
@@ -80,7 +80,7 @@ public class BotDriveEX {
             motors[2].set(speed);
             motors[3].set(speed);
             ODM.update();
-            posx = ODM.getX(DistanceUnit.INCH);
+            posx = ODM.getPosX(DistanceUnit.INCH);
         }
         motors[0].set(0);
         motors[1].set(0);
@@ -112,7 +112,7 @@ public class BotDriveEX {
     }
     public void driveOdomMec(int dx) {
         double speed;
-        double posx = ODM.getX(DistanceUnit.INCH);
+        double posx = ODM.getPosX(DistanceUnit.INCH);
 
         while (!(posx>dx-0.3 && posx<dx+0.3)) {
             if (dx < posx) {
@@ -122,14 +122,14 @@ public class BotDriveEX {
             }
             mec.driveFieldCentric(0,speed,0,ODM.getHeading(AngleUnit.DEGREES));
             ODM.update();
-            posx = ODM.getX(DistanceUnit.INCH);
+            posx = ODM.getPosX(DistanceUnit.INCH);
             telUp();
         }
         mec.driveFieldCentric(0,0,0,ODM.getHeading(AngleUnit.DEGREES));
     }
     public void strafeOdomMec(int dy){
         double speed;
-        double posy = ODM.getY(DistanceUnit.INCH);
+        double posy = ODM.getPosY(DistanceUnit.INCH);
 
         while (!(posy>dy-0.3 && posy<dy+0.3)) {
             if (dy < posy) {
@@ -139,7 +139,7 @@ public class BotDriveEX {
             }
             mec.driveFieldCentric(speed,0,0,ODM.getHeading(AngleUnit.DEGREES));
             ODM.update();
-            posy = ODM.getY(DistanceUnit.INCH);
+            posy = ODM.getPosY(DistanceUnit.INCH);
             telUp();
         }
         mec.driveFieldCentric(0,0,0,ODM.getHeading(AngleUnit.DEGREES));
@@ -164,8 +164,8 @@ public class BotDriveEX {
     }
     public void telUp() {
         ODM.update();
-        telemetry.addData("XPos: ",ODM.getX(DistanceUnit.INCH));
-        telemetry.addData("YPos: ",ODM.getY(DistanceUnit.INCH));
+        telemetry.addData("XPos: ",ODM.getPosX(DistanceUnit.INCH));
+        telemetry.addData("YPos: ",ODM.getPosY(DistanceUnit.INCH));
         telemetry.addData("Heading: ",ODM.getHeading(AngleUnit.DEGREES));
         telemetry.update();
     }

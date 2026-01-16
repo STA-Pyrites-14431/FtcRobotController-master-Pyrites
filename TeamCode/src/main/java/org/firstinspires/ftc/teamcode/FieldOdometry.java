@@ -38,10 +38,10 @@ public class FieldOdometry {
 
         return new Pose2D(DistanceUnit.INCH,fieldX,fieldY,AngleUnit.DEGREES,fieldHeading);
     }
-    public double getY(DistanceUnit d) {
+    public double getPosY(DistanceUnit d) {
         return getFieldPose().getY(d);
     }
-    public double getX(DistanceUnit d) {
+    public double getPosX(DistanceUnit d) {
         return getFieldPose().getX(d);
     }
     public double getHeading(AngleUnit a) {

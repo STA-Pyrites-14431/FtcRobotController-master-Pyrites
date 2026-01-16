@@ -1,23 +1,31 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Ramp extends SubsystemBase {
+public class Ramp {
     private MotorEx motorR;
+    private String status = "";
 
-    public Ramp(HardwareMap hM) {
-        motorR = new MotorEx(hM,"motorR", Motor.GoBILDA.RPM_312);
+    public Ramp(HardwareMap hwMap) {
+        motorR = new MotorEx(hwMap,"motorR");
         motorR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void enableRamp() {
+    public void forward() {
         motorR.set(0.5);
+        status = "Forward";
     }
-
-    public void disableRamp() {
+    public void reverse() {
+        motorR.set(-0.5);
+        status = "Reverse";
+    }
+    public void disable() {
         motorR.set(0);
+        status = "Disabled";
+    }
+    public String getStatus() {
+        return status;
     }
 }

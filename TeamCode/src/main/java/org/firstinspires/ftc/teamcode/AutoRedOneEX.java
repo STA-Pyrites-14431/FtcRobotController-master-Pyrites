@@ -15,8 +15,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class AutoRedOneEX extends LinearOpMode {
 
     BotDriveEX driveEx, drive;
-//    GoBildaPinpointDriver ODM;
-    FieldOdometry ODM;
+    GoBildaPinpointDriver ODM;
+//    FieldOdometry ODM;
 
     MotorEx motorFL, motorFR, motorBL, motorBR, motorLL, motorLR, motorI, motorR;
     MecanumDrive mec;
@@ -47,10 +47,10 @@ public class AutoRedOneEX extends LinearOpMode {
         motorBL.setInverted(true);
         motorFL.setInverted(true);
 
-//        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
-        ODM = new FieldOdometry(hardwareMap,"ODM");
-//        ODM.resetPosAndIMU();
-//        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
+//        ODM = new FieldOdometry(hardwareMap,"ODM");
+        ODM.resetPosAndIMU();
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
 
         Pose2D start = new Pose2D(DistanceUnit.INCH,-60,24, AngleUnit.DEGREES,0);

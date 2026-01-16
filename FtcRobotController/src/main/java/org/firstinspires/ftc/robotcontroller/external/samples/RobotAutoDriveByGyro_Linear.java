@@ -424,6 +424,6 @@ public class RobotAutoDriveByGyro_Linear extends LinearOpMode {
      */
     public double getHeading() {
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
-        return orientation.getYaw(AngleUnit.DEGREES);
+        return orientation.getPosYaw(AngleUnit.DEGREES);
     }
 }

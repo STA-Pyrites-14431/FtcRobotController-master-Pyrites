@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -15,6 +16,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Subsystems.Intake;
+import org.firstinspires.ftc.teamcode.Subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.Subsystems.Ramp;
 
 @TeleOp(name = "manualEX")
 public class ManualEX extends OpMode {
@@ -28,7 +32,10 @@ public class ManualEX extends OpMode {
     double axial, lateral, yaw, powerFL, powerFR, powerBL, powerBR, max, volts, distance, maxV, maxD;
     AnalogInput laser;
     MecanumDrive mec;
-    GamepadEx driver;
+    GamepadEx driver, operator;
+    Launcher launcherS;
+    Intake intakeS;
+    Ramp rampS;
     double lP;
 
     @Override
@@ -42,9 +49,13 @@ public class ManualEX extends OpMode {
         motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
         motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
 
-        odom = new FieldOdometry(hardwareMap,"ODM");
+//        odom = new FieldOdometry(hardwareMap,"ODM");
 
         laser = hardwareMap.get(AnalogInput.class, "LIDAR");
+
+        launcherS = new Launcher(hardwareMap);
+        intakeS = new Intake(hardwareMap);
+        rampS = new Ramp(hardwareMap);
 
         motorFL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorFR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -78,7 +89,7 @@ public class ManualEX extends OpMode {
     public void loop() {
 
         ODM.update();
-        odom.update();
+//        odom.update();
         volts = laser.getVoltage();
         distance = (volts/maxV)*maxD;
 
@@ -104,20 +115,43 @@ public class ManualEX extends OpMode {
             lP -= 0.01;
         }
 
-        Pose2D OP = odom.getFieldPose();
+//        Pose2D OP = odom.getFieldPose();
 
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
-        telemetry.addData("x-Pos: ",OP.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
-        telemetry.addData("y-Pos: ",OP.getY(DistanceUnit.INCH));
-        telemetry.addData("Heading: ",Math.toDegrees(heading));
-        telemetry.addData("h-heading: ",OP.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Distance: ",distance);
-        telemetry.addData("Voltage: ",laser.getVoltage());
-        telemetry.addData("LaunchPower: ",lP);
+        telemetry.addData("Heading: ",heading);
+        telemetry.addData("Launcher Status: ",launcherS.getStatus());
+        telemetry.addData("Intake Status: ",intakeS.getStatus());
+        telemetry.addData("Ramp Status: ",rampS.getStatus());
         telemetry.update();
 
-        if (gamepad2.a || gamepad1.a) { //Turn on launcher
+        if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            launcherS.enable(0.4);
+        } else if (operator.wasJustPressed(GamepadKeys.Button.X) || driver.wasJustPressed(GamepadKeys.Button.X)) {
+            launcherS.enable(0.5);
+        } else if (operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3 || driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
+            launcherS.enable(1);
+        } else if (operator.wasJustPressed(GamepadKeys.Button.Y) || driver.wasJustPressed(GamepadKeys.Button.Y)) {
+            launcherS.disable();
+        }
+
+        if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+            intakeS.forward();
+        } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) || driver.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            intakeS.reverse();
+        } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_LEFT) || driver.wasJustPressed(GamepadKeys.Button.DPAD_LEFT)) {
+            intakeS.disable();
+        }
+
+        if (operator.wasJustPressed(GamepadKeys.Button.DPAD_UP) || driver.wasJustPressed(GamepadKeys.Button.DPAD_UP)) {
+            rampS.forward();
+        } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) || driver.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
+            rampS.reverse();
+        } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT) || driver.wasJustPressed(GamepadKeys.Button.DPAD_RIGHT)) {
+            rampS.disable();
+        }
+
+        /*if (gamepad2.a || gamepad1.a) { //Turn on launcher
             motorLL.set(lP);
             motorLR.set(-lP);
         } else if (gamepad1.y || gamepad2.y) {
@@ -144,7 +178,7 @@ public class ManualEX extends OpMode {
             motorR.set(-0.5);
         } else {
             motorR.set(0);
-        }
+        }*/
 
 
         //Strafe left. FL and BR spin backwards; FR and BL spin forwards

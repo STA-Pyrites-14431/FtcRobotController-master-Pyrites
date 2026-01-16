@@ -138,13 +138,13 @@ public class SensorLimelight3A extends LinearOpMode {
                 // Access fiducial results
                 List<LLResultTypes.FiducialResult> fiducialResults = result.getFiducialResults();
                 for (LLResultTypes.FiducialResult fr : fiducialResults) {
-                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetXDegrees(), fr.getTargetYDegrees());
+                    telemetry.addData("Fiducial", "ID: %d, Family: %s, X: %.2f, Y: %.2f", fr.getFiducialId(), fr.getFamily(), fr.getTargetPosXDegrees(), fr.getTargetPosYDegrees());
                 }
 
                 // Access color results
                 List<LLResultTypes.ColorResult> colorResults = result.getColorResults();
                 for (LLResultTypes.ColorResult cr : colorResults) {
-                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetXDegrees(), cr.getTargetYDegrees());
+                    telemetry.addData("Color", "X: %.2f, Y: %.2f", cr.getTargetPosXDegrees(), cr.getTargetPosYDegrees());
                 }
             } else {
                 telemetry.addData("Limelight", "No data available");

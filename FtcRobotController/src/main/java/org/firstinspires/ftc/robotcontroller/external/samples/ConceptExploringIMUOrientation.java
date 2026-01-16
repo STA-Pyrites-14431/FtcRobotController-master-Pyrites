@@ -155,7 +155,7 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
                 YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
                 AngularVelocity angularVelocity = imu.getRobotAngularVelocity(AngleUnit.DEGREES);
 
-                telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getYaw(AngleUnit.DEGREES));
+                telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", orientation.getPosYaw(AngleUnit.DEGREES));
                 telemetry.addData("Pitch (X)", "%.2f Deg.", orientation.getPitch(AngleUnit.DEGREES));
                 telemetry.addData("Roll (Y)", "%.2f Deg.\n", orientation.getRoll(AngleUnit.DEGREES));
                 telemetry.addData("Yaw (Z) velocity", "%.2f Deg/Sec", angularVelocity.zRotationRate);
