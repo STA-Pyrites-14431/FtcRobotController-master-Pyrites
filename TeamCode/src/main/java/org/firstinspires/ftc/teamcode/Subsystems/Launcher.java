@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class Launcher {
+public class Launcher extends SubsystemBase {
     private MotorEx motorLL, motorLR;
     private String status = "";
 
@@ -13,12 +14,17 @@ public class Launcher {
         motorLR = new MotorEx(hwMap,"motorLR");
         motorLL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         motorLR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorLR.setInverted(true);
     }
 
     public void enable(double P) {
         motorLL.set(P);
         motorLR.set(P);
         status = "Enabled";
+    }
+    public void enable() {
+        motorLL.set(0.4);
+        motorLR.set(0.4);
     }
     public void disable() {
         motorLL.set(0);

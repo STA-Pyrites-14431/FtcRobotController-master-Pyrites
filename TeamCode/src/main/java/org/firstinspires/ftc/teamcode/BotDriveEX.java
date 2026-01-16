@@ -125,14 +125,14 @@ public class BotDriveEX {
             posx = ODM.getPosX(DistanceUnit.INCH);
             telUp();
         }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading(AngleUnit.DEGREES));
+        mec.stop();
     }
     public void strafeOdomMec(int dy){
         double speed;
         double posy = ODM.getPosY(DistanceUnit.INCH);
 
         while (!(posy>dy-0.3 && posy<dy+0.3)) {
-            if (dy < posy) {
+            if (dy > posy) {
                 speed = -0.5;
             } else {
                 speed = 0.5;
@@ -142,7 +142,7 @@ public class BotDriveEX {
             posy = ODM.getPosY(DistanceUnit.INCH);
             telUp();
         }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading(AngleUnit.DEGREES));
+        mec.stop();
     }
     public void turnOdomMec(double d) {
         d*=-1;
@@ -160,7 +160,7 @@ public class BotDriveEX {
             heading = ODM.getHeading(AngleUnit.DEGREES);
             telUp();
         }
-        mec.driveFieldCentric(0,0,0,ODM.getHeading(AngleUnit.DEGREES));
+        mec.stop();
     }
     public void telUp() {
         ODM.update();

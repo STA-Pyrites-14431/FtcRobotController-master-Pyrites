@@ -1,0 +1,66 @@
+package org.firstinspires.ftc.teamcode.Subsystems;
+
+import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
+public class Drive extends SubsystemBase {
+
+    private final MotorEx motorFL, motorFR, motorBL, motorBR;
+    private final MecanumDrive mec;
+    private final GoBildaPinpointDriver ODM;
+
+    public Drive(HardwareMap hardwareMap, Telemetry tel) {
+        motorFL = new MotorEx(hardwareMap,"motorFL", Motor.GoBILDA.RPM_312); //EH0
+        motorFR = new MotorEx(hardwareMap,"motorFR",Motor.GoBILDA.RPM_312); //CH0
+        motorBL = new MotorEx(hardwareMap,"motorBL",Motor.GoBILDA.RPM_312); //EH1
+        motorBR = new MotorEx(hardwareMap,"motorBR",Motor.GoBILDA.RPM_312); //CH1
+
+        motorFL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorFR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorBL.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        motorBR.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        motorBR.setInverted(true);
+        motorBL.setInverted(true);
+        motorFL.setInverted(true);
+
+        mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
+
+        ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
+        ODM.setOffsets(0,0, DistanceUnit.INCH);
+        ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        ODM.resetPosAndIMU();
+
+        Pose2D start = new Pose2D(DistanceUnit.INCH,-60,-24,AngleUnit.DEGREES,0);
+//        ODM.setPosition(start);
+    }
+
+    public void fieldCentricDrive(double y, double x, double xr) {
+        mec.driveFieldCentric(x,y,xr,ODM.getHeading(AngleUnit.DEGREES));
+    }
+    public double getX(DistanceUnit d) {
+        return ODM.getPosX(d);
+    }
+    public double getY(DistanceUnit d) {
+        return ODM.getPosY(d);
+    }
+    public double getH(AngleUnit d) {
+        return ODM.getHeading(d);
+    }
+    public void updateOdom() {
+        ODM.update();
+    }
+    public void stop() {
+        mec.stop();
+    }
+}

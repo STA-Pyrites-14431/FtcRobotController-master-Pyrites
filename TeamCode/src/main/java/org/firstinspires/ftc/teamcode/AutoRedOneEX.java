@@ -53,7 +53,7 @@ public class AutoRedOneEX extends LinearOpMode {
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
 
-        Pose2D start = new Pose2D(DistanceUnit.INCH,-60,24, AngleUnit.DEGREES,0);
+        Pose2D start = new Pose2D(DistanceUnit.INCH,-60,-24, AngleUnit.DEGREES,0);
 
         MotorEx[] motors = {motorFL, motorFR, motorBL, motorBR};
         double speed = 0.6;
