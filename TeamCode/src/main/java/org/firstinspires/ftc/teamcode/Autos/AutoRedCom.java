@@ -26,10 +26,12 @@ public class AutoRedCom extends CommandOpMode {
     Launcher launcherS;
     Ramp rampS;
     Command t0, t90, x24, y24, x0, y0;
+    Command tS;
     Command lE, lD, rE, rD, iE, iD;
     Command x24PID, y24PID, t90PD;
-    SequentialCommandGroup sqnc1, shoot, sqnc2, test;
-    WaitCommand p;
+    SequentialCommandGroup shoot, test;
+    SequentialCommandGroup p1;
+    WaitCommand w;
 
     @Override
     public void initialize() {
@@ -39,11 +41,12 @@ public class AutoRedCom extends CommandOpMode {
         rampS = new Ramp(hardwareMap);
 
         //basic wait commands
-        p = new WaitCommand(200);
+        w = new WaitCommand(200);
 
         //turn commands
-        t0 = new TurnToAngle(driveS, 0);
-        t90 = new TurnToAngle(driveS, 90);
+        t0 = new TurnToAnglePD(driveS,0,telemetry);
+        t90 = new TurnToAnglePD(driveS,90,telemetry);
+        tS = new TurnToAnglePD(driveS,228,telemetry);
         //drive commands
         x0 = new DriveToX(driveS,0);
         x24 = new DriveToX(driveS,24);
@@ -59,16 +62,10 @@ public class AutoRedCom extends CommandOpMode {
         iE = new InstantCommand(intakeS::forward);
         iD = new InstantCommand(intakeS::disable);
 
-        //testing commands
-        x24PID = new DriveToXPID(driveS,24, telemetry);
-        y24PID = new DriveToYPID(driveS,24, telemetry);
-        t90PD = new TurnToAnglePD(driveS,90, telemetry);
-
         //putting commands together
-        sqnc1 = new SequentialCommandGroup(t90);
+        p1 = new SequentialCommandGroup(x24,w,y24);
         shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
-        sqnc2 = new SequentialCommandGroup(t0);
-        test = new SequentialCommandGroup(t90,p,t0,p,x24,p,y24,p,x0,p,y0);
+        test = new SequentialCommandGroup(t90,w,t0,w,x24,w,y24,w,x0,w,y0);
 
         schedule(test,new WaitCommand(200),shoot);
     }
