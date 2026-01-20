@@ -69,7 +69,7 @@ public class ManualEX extends OpMode {
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
-        ODM.setOffsets(0,0, DistanceUnit.INCH);
+        ODM.setOffsets(60,170, DistanceUnit.MM);
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         ODM.resetPosAndIMU();
@@ -81,6 +81,7 @@ public class ManualEX extends OpMode {
 
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
         driver = new GamepadEx(gamepad1);
+        operator = new GamepadEx(gamepad2);
         lP = 0;
     }
 

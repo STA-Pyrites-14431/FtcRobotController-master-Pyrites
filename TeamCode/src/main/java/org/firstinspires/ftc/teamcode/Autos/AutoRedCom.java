@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveToX;
 import org.firstinspires.ftc.teamcode.Commands.DriveToXPID;
@@ -17,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.Subsystems.Ramp;
 
+@Autonomous(name = "AutoRedCom")
 public class AutoRedCom extends CommandOpMode {
 
     Drive driveS;
@@ -42,8 +44,10 @@ public class AutoRedCom extends CommandOpMode {
         //turn commands
         t0 = new TurnToAngle(driveS, 0);
         t90 = new TurnToAngle(driveS, 90);
+        //drive commands
         x0 = new DriveToX(driveS,0);
         x24 = new DriveToX(driveS,24);
+        //strafe commands
         y0 = new DriveToY(driveS,0);
         y24 = new DriveToY(driveS,24);
 
@@ -56,9 +60,9 @@ public class AutoRedCom extends CommandOpMode {
         iD = new InstantCommand(intakeS::disable);
 
         //testing commands
-        x24PID = new DriveToXPID(driveS,24);
-        y24PID = new DriveToYPID(driveS,24);
-        t90PD = new TurnToAnglePD(driveS,90);
+        x24PID = new DriveToXPID(driveS,24, telemetry);
+        y24PID = new DriveToYPID(driveS,24, telemetry);
+        t90PD = new TurnToAnglePD(driveS,90, telemetry);
 
         //putting commands together
         sqnc1 = new SequentialCommandGroup(t90);
@@ -66,6 +70,6 @@ public class AutoRedCom extends CommandOpMode {
         sqnc2 = new SequentialCommandGroup(t0);
         test = new SequentialCommandGroup(t90,p,t0,p,x24,p,y24,p,x0,p,y0);
 
-        schedule(test,p,shoot);
+        schedule(test,new WaitCommand(200),shoot);
     }
 }

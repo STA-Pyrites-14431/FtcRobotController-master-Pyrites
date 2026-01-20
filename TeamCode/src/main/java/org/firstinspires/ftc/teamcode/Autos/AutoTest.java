@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.Commands.DriveToX;
 import org.firstinspires.ftc.teamcode.Commands.DriveToXPID;
@@ -17,15 +18,15 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.Subsystems.Ramp;
 
+@Autonomous(name = "AutoTest")
 public class AutoTest extends CommandOpMode {
 
     Drive driveS;
     Intake intakeS;
     Launcher launcherS;
     Ramp rampS;
-    Command t0, t90, x24, y24, x0, y0;
     Command lE, lD, rE, rD, iE, iD;
-    Command x24PID, y24PID, t90PD;
+    Command x0,x24,x48,y0,y24,y48,t0,t45,t90;
     SequentialCommandGroup test;
     WaitCommand p;
 
@@ -36,33 +37,22 @@ public class AutoTest extends CommandOpMode {
         launcherS = new Launcher(hardwareMap);
         rampS = new Ramp(hardwareMap);
 
-        //basic wait commands
-        p = new WaitCommand(200);
-
-        //turn commands
-        t0 = new TurnToAngle(driveS, 0);
-        t90 = new TurnToAngle(driveS, 90);
-        x0 = new DriveToX(driveS,0);
-        x24 = new DriveToX(driveS,24);
-        y0 = new DriveToY(driveS,0);
-        y24 = new DriveToY(driveS,24);
-
-        //non-driving commands
-        lE = new InstantCommand(launcherS::enable);
-        lD = new InstantCommand(launcherS::disable);
-        rE = new InstantCommand(rampS::forward);
-        rD = new InstantCommand(rampS::disable);
-        iE = new InstantCommand(intakeS::forward);
-        iD = new InstantCommand(intakeS::disable);
+        p = new WaitCommand(500);
 
         //testing commands
-        x24PID = new DriveToXPID(driveS,24);
-        y24PID = new DriveToYPID(driveS,24);
-        t90PD = new TurnToAnglePD(driveS,90);
+
 
         //putting commands together
-
-        test = new SequentialCommandGroup(x24PID);
+        x0 = new DriveToXPID(driveS,0,telemetry);
+        x24 = new DriveToXPID(driveS,24,telemetry);
+        x48 = new DriveToXPID(driveS,48,telemetry);
+        y0 = new DriveToYPID(driveS,0,telemetry);
+        y24 = new DriveToYPID(driveS,24,telemetry);
+        y48 = new DriveToYPID(driveS,48,telemetry);
+        t0 = new TurnToAnglePD(driveS,0,telemetry);
+        t45 = new TurnToAnglePD(driveS,45,telemetry);
+        t90 = new TurnToAnglePD(driveS,90,telemetry);
+        test = new SequentialCommandGroup(x24,p,y24,p,x0,p,y0,x48,t90,y48,t0,x0,y0);
 
         schedule(test);
     }

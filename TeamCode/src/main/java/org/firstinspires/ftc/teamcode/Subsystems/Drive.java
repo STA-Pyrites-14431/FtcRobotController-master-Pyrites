@@ -46,7 +46,7 @@ public class Drive extends SubsystemBase {
     }
 
     public void fieldCentricDrive(double y, double x, double xr) {
-        mec.driveFieldCentric(x,y,xr,ODM.getHeading(AngleUnit.DEGREES));
+        mec.driveFieldCentric(y,x,xr,ODM.getHeading(AngleUnit.DEGREES));
     }
     public double getX(DistanceUnit d) {
         return ODM.getPosX(d);
