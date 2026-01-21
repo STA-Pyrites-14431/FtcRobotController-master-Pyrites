@@ -7,11 +7,13 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Commands.DriveToX;
 import org.firstinspires.ftc.teamcode.Commands.DriveToXPID;
 import org.firstinspires.ftc.teamcode.Commands.DriveToY;
 import org.firstinspires.ftc.teamcode.Commands.DriveToYPID;
-import org.firstinspires.ftc.teamcode.Commands.TurnToAngle;
 import org.firstinspires.ftc.teamcode.Commands.TurnToAnglePD;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -30,7 +32,10 @@ public class AutoRedCom extends CommandOpMode {
     Command lE, lD, rE, rD, iE, iD;
     Command x24PID, y24PID, t90PD;
     SequentialCommandGroup shoot, test;
-    SequentialCommandGroup p1;
+    Pose2D p1, p2, p3, p4, p5, p6; //Little p for points
+    SequentialCommandGroup P1, P2, P3, P4, P5, P6; //Big P for paths
+    DistanceUnit I = DistanceUnit.INCH;
+    AngleUnit D = AngleUnit.DEGREES;
     WaitCommand w;
 
     @Override
@@ -62,11 +67,25 @@ public class AutoRedCom extends CommandOpMode {
         iE = new InstantCommand(intakeS::forward);
         iD = new InstantCommand(intakeS::disable);
 
+        //making points
+        p1 = new Pose2D(I,24,24,D,223);
+        p2 = new Pose2D(I,12,24,D,90);
+
         //putting commands together
-        p1 = new SequentialCommandGroup(x24,w,y24);
+        P1 = DriveToPose2D(p1);
+        P2 = DriveToPose2D(p2);
         shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
         test = new SequentialCommandGroup(t90,w,t0,w,x24,w,y24,w,x0,w,y0);
 
-        schedule(test,new WaitCommand(200),shoot);
+        schedule(P1,new WaitCommand(200),shoot,new WaitCommand(200),P2);
+    }
+    public SequentialCommandGroup DriveToPose2D(Pose2D p) {
+        double x = p.getX(I);
+        double y = p.getY(I);
+        double h = p.getHeading(D);
+        Command X = new DriveToXPID(driveS,x,telemetry);
+        Command Y = new DriveToYPID(driveS,y,telemetry);
+        Command H = new TurnToAnglePD(driveS,h,telemetry);
+        return new SequentialCommandGroup(X,new WaitCommand(200),Y,new WaitCommand(200),H);
     }
 }
