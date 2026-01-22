@@ -36,7 +36,7 @@ public class Drive extends SubsystemBase {
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
-        ODM.setOffsets(0,0, DistanceUnit.INCH);
+        ODM.setOffsets(60,170, DistanceUnit.INCH);
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         ODM.resetPosAndIMU();

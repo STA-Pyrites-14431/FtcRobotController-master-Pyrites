@@ -25,7 +25,6 @@ import org.firstinspires.ftc.teamcode.Subsystems.Ramp;
 public class ManualEX extends OpMode {
 
     GoBildaPinpointDriver ODM;
-    FieldOdometry odom;
 
     //FL = Front Left, FR = Front Right, BL = Back Left, BR = Back Right
     //LL = Launcher Left, LR = Launcher Right, I = Intake, R = Ramp
@@ -50,8 +49,6 @@ public class ManualEX extends OpMode {
         motorLL = new MotorEx(hardwareMap,"motorLL"); //EH2
         motorI = new MotorEx(hardwareMap,"motorI",Motor.GoBILDA.RPM_223); //CH3
         motorR = new MotorEx(hardwareMap,"motorR",Motor.GoBILDA.RPM_312); //EH3
-
-//        odom = new FieldOdometry(hardwareMap,"ODM");
 
         laser = hardwareMap.get(AnalogInput.class, "LIDAR");
 
@@ -121,8 +118,6 @@ public class ManualEX extends OpMode {
         } else if (gamepad1.dpad_left && lP > 0) {
             lP -= 0.01;
         }
-
-//        Pose2D OP = odom.getFieldPose();
 
         telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
         telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));

@@ -19,9 +19,9 @@ public class DriveToYPID extends CommandBase {
     public DriveToYPID(Drive driveS, double y, Telemetry tel) {
         this.driveS = driveS;
         this.targetY = y;
-        this.pid = new PIDController(0.12,0.0006,0.007);
+        this.pid = new PIDController(0.03,0.0004,0.003);
         this.tel = tel;
-        pid.setTolerance(0.2);
+        pid.setTolerance(0.5);
         addRequirements(driveS);
     }
 

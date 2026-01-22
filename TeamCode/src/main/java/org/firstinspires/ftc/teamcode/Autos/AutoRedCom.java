@@ -72,7 +72,7 @@ public class AutoRedCom extends CommandOpMode {
         p2 = new Pose2D(I,12,24,D,90);
 
         Pose2D start = new Pose2D(DistanceUnit.INCH,-60,-24,AngleUnit.DEGREES,0);
-        driveS.setStart(start);
+//        driveS.setStart(start);
 
         //putting commands together
         P1 = DriveToPose2D(p1);

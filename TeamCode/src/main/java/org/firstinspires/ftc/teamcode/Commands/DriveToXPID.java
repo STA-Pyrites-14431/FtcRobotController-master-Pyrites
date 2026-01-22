@@ -21,7 +21,7 @@ public class DriveToXPID extends CommandBase {
         this.targetX = x;
         this.tel = tel;
         this.pid = new PIDController(0.064, 0.0009, 0.0059);
-        pid.setTolerance(0.2);
+        pid.setTolerance(0.3);
         addRequirements(driveS);
     }
 
