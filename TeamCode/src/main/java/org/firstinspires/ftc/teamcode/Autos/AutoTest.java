@@ -52,23 +52,30 @@ public class AutoTest extends CommandOpMode {
         iD = new InstantCommand(intakeS::disable);
 
         //making points
+        Pose2D start = new Pose2D(DistanceUnit.INCH,-62,-24,AngleUnit.DEGREES,0);
+//        driveS.setStart(start);
 
         //putting commands together
-        shootSCG = DriveToPoint(24,-24,223);
+        shootSCG = DriveToPoint(24,-24,-137);
         P1 = DriveToPoint(12,-24,90);
         P2 = DriveToPoint(-12,-24,90);
         P3 = DriveToPoint(-36,-24,90);
         endSCG = DriveToPoint(0,-24,-90);
+        x24 = new DriveToXPID(driveS,24,telemetry);
+        y24 = new DriveToYPID(driveS,-24,telemetry);
+        t90 = new TurnToAnglePD(driveS,-137,telemetry);
+
 
         shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
 
-        schedule(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w, shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG);
+//        schedule(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w,shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG);
+        schedule(new SequentialCommandGroup(y24,t90));
 
     }
     public SequentialCommandGroup DriveToPoint(double x, double y, double h) {
         Command X = new DriveToXPID(driveS,x,telemetry);
         Command Y = new DriveToYPID(driveS,y,telemetry);
-        Command H = new TurnToAnglePD(driveS,h,telemetry);
-        return new SequentialCommandGroup(X,new WaitCommand(200),Y,new WaitCommand(200),H);
+//        Command H = new TurnToAnglePD(driveS,h,telemetry);
+        return new SequentialCommandGroup(X,new WaitCommand(200),Y);
     }
 }

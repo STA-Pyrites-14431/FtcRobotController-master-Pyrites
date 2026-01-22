@@ -63,4 +63,7 @@ public class Drive extends SubsystemBase {
     public void stop() {
         mec.stop();
     }
+    public void setStart(Pose2D start) {
+        ODM.setPosition(start);
+    }
 }

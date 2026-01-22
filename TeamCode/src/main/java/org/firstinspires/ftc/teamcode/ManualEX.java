@@ -105,6 +105,9 @@ public class ManualEX extends OpMode {
         lateral = driver.getLeftX(); //gets input of left and right of left stick for the robot strafing
         yaw = driver.getRightX(); //gets input of left and right of right stick for the robot turning
 
+        driver.readButtons();
+        operator.readButtons();
+
 
         //Odometry auto for field centric driving
         Pose2D pos = ODM.getPosition();
@@ -139,7 +142,7 @@ public class ManualEX extends OpMode {
             launcherS.disable();
         }
 
-        if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
+        if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
             intakeS.forward();
         } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) || driver.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             intakeS.reverse();
