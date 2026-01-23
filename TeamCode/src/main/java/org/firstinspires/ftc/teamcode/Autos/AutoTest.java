@@ -62,14 +62,16 @@ public class AutoTest extends CommandOpMode {
         P3 = DriveToPoint(-36,-24,90);
         endSCG = DriveToPoint(0,-24,-90);
         x24 = new DriveToXPID(driveS,24,telemetry);
+        y0 = new DriveToYPID(driveS,0,telemetry);
         y24 = new DriveToYPID(driveS,-24,telemetry);
+        y48 = new DriveToYPID(driveS,-48,telemetry);
         t90 = new TurnToAnglePD(driveS,-137,telemetry);
 
 
         shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
 
-//        schedule(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w,shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG);
-        schedule(new SequentialCommandGroup(y24,t90));
+//        schedule(new SequentialCommandGroup(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w,shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG));
+        schedule(new SequentialCommandGroup(y24,new WaitCommand(2000),y0));
 
     }
     public SequentialCommandGroup DriveToPoint(double x, double y, double h) {
