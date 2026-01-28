@@ -23,8 +23,8 @@ public class Launcher extends SubsystemBase {
         status = "Enabled";
     }
     public void enable() {
-        motorLL.set(0.4);
-        motorLR.set(0.4);
+        motorLL.set(0.35);
+        motorLR.set(0.35);
     }
     public void disable() {
         motorLL.set(0);
@@ -33,5 +33,8 @@ public class Launcher extends SubsystemBase {
     }
     public String getStatus() {
         return status;
+    }
+    public double getSpeed() {
+        return motorLL.getVelocity();
     }
 }

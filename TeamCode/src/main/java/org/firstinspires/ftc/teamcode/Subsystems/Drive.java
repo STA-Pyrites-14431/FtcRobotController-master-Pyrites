@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+import static java.lang.Thread.sleep;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -36,7 +38,7 @@ public class Drive extends SubsystemBase {
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
-        ODM.setOffsets(60,170, DistanceUnit.INCH);
+        ODM.setOffsets(55,-168, DistanceUnit.MM);
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         ODM.resetPosAndIMU();
@@ -47,6 +49,9 @@ public class Drive extends SubsystemBase {
 
     public void fieldCentricDrive(double y, double x, double xr) {
         mec.driveFieldCentric(y,x,xr,ODM.getHeading(AngleUnit.DEGREES));
+    }
+    public void robotCentricDrive(double y, double x, double xr) {
+        mec.driveRobotCentric(y,x,xr);
     }
     public double getX(DistanceUnit d) {
         return ODM.getPosX(d);
@@ -65,5 +70,8 @@ public class Drive extends SubsystemBase {
     }
     public void setStart(Pose2D start) {
         ODM.setPosition(start);
+    }
+    public void resetPose() {
+        ODM.setPosition(new Pose2D(DistanceUnit.INCH,0,0,AngleUnit.DEGREES,0));
     }
 }

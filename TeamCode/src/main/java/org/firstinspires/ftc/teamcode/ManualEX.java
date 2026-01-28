@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.command.InstantCommand;
+import com.arcrobotics.ftclib.command.button.Button;
+import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
@@ -9,9 +12,6 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -33,6 +33,7 @@ public class ManualEX extends OpMode {
     AnalogInput laser;
     MecanumDrive mec;
     GamepadEx driver, operator;
+    Button bumperR1, bumperR2, btnY1, btnY2, btnA1, btnA2;
     Launcher launcherS;
     Intake intakeS;
     Ramp rampS;
@@ -69,7 +70,7 @@ public class ManualEX extends OpMode {
 
         ODM = hardwareMap.get(GoBildaPinpointDriver.class,"ODM");
 
-        ODM.setOffsets(60,170, DistanceUnit.MM);
+        ODM.setOffsets(55,-168, DistanceUnit.MM);
         ODM.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         ODM.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.REVERSED);
         ODM.resetPosAndIMU();
@@ -82,6 +83,14 @@ public class ManualEX extends OpMode {
         mec = new MecanumDrive(motorFL,motorFR,motorBL,motorBR);
         driver = new GamepadEx(gamepad1);
         operator = new GamepadEx(gamepad2);
+
+        bumperR1 = new GamepadButton(driver,GamepadKeys.Button.RIGHT_BUMPER);
+        bumperR2 = new GamepadButton(operator,GamepadKeys.Button.RIGHT_BUMPER);
+        btnY1 = new GamepadButton(driver,GamepadKeys.Button.Y);
+        btnY2 = new GamepadButton(operator,GamepadKeys.Button.Y);
+        btnA1 = new GamepadButton(driver,GamepadKeys.Button.A);
+        btnA2 = new GamepadButton(operator,GamepadKeys.Button.A);
+
         lP = 0;
     }
 
@@ -119,25 +128,32 @@ public class ManualEX extends OpMode {
             lP -= 0.01;
         }
 
-        telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
-        telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
+        telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.MM));
+        telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.MM));
         telemetry.addData("Heading: ",heading);
         telemetry.addData("Launcher Status: ",launcherS.getStatus());
         telemetry.addData("Intake Status: ",intakeS.getStatus());
         telemetry.addData("Ramp Status: ",rampS.getStatus());
+        telemetry.addData("Pose2D: ",ODM.getPosition());
+        telemetry.addData("Launcher Speed: ",launcherS.getSpeed());
         telemetry.update();
 
-        if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
-            launcherS.enable(0.4);
-        } else if (operator.wasJustPressed(GamepadKeys.Button.X) || driver.wasJustPressed(GamepadKeys.Button.X)) {
-            launcherS.enable(0.5);
-        } else if (operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3 || driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
-            launcherS.enable(1);
-        } else if (operator.wasJustPressed(GamepadKeys.Button.Y) || driver.wasJustPressed(GamepadKeys.Button.Y)) {
-            launcherS.disable();
-        }
+//        if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+//            launcherS.enable(0.35);
+//        } else if (operator.wasJustPressed(GamepadKeys.Button.X) || driver.wasJustPressed(GamepadKeys.Button.X)) {
+//            launcherS.enable(0.5);
+//        } else if (operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3 || driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
+//            launcherS.enable(1);
+//        } else if (operator.wasJustPressed(GamepadKeys.Button.Y) || driver.wasJustPressed(GamepadKeys.Button.Y)) {
+//            launcherS.disable();
+//        }
 
-        if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+        bumperR1.whenPressed(new InstantCommand(launcherS::enable));
+        bumperR2.whenPressed(new InstantCommand(launcherS::enable));
+        btnY1.whenPressed(new InstantCommand(launcherS::disable));
+        btnY2.whenPressed(new InstantCommand(launcherS::disable));
+
+        if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
             intakeS.forward();
         } else if (operator.wasJustPressed(GamepadKeys.Button.DPAD_DOWN) || driver.wasJustPressed(GamepadKeys.Button.DPAD_DOWN)) {
             intakeS.reverse();

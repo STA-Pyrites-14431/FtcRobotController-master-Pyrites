@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.Commands.DriveToX;
 import org.firstinspires.ftc.teamcode.Commands.DriveToXPID;
 import org.firstinspires.ftc.teamcode.Commands.DriveToYPID;
 import org.firstinspires.ftc.teamcode.Commands.TurnToAnglePD;
@@ -25,11 +26,11 @@ public class AutoTest extends CommandOpMode {
     Intake intakeS;
     Launcher launcherS;
     Ramp rampS;
-    Command lE, lD, rE, rD, iE, iD;
-    Command x0,x24,x48,y0,y24,y48,t0,t45,t90;
+    Command lE, lD, rE, rD, iE, iD, RB;
+    Command x0,x24,x48,y0,y24,y48,t0,t45,t90, tn90;
     SequentialCommandGroup shoot;
     Pose2D shootPose2D, p1, p2, p3, endPose2D; //Little p for points
-    SequentialCommandGroup shootSCG, P1, P2, P3, endSCG; //Big P for paths
+    SequentialCommandGroup shootSCG, P0, P1, P2, P3, endSCG; //Big P for paths
     DistanceUnit I = DistanceUnit.INCH;
     AngleUnit D = AngleUnit.DEGREES;
     WaitCommand w;
@@ -56,28 +57,37 @@ public class AutoTest extends CommandOpMode {
 //        driveS.setStart(start);
 
         //putting commands together
-        shootSCG = DriveToPoint(24,-24,-137);
-        P1 = DriveToPoint(12,-24,90);
-        P2 = DriveToPoint(-12,-24,90);
-        P3 = DriveToPoint(-36,-24,90);
-        endSCG = DriveToPoint(0,-24,-90);
+        shootSCG = DriveToPoint(24,-24);
+        Command tShoot = new TurnToAnglePD(driveS,-137,telemetry);
+        P0 = DriveToPoint(0,0);
+        P1 = DriveToPoint(12,-24);
+        P2 = DriveToPoint(-12,-24);
+        P3 = DriveToPoint(-36,-24);
+        endSCG = DriveToPoint(0,-24);
+        tn90 = new TurnToAnglePD(driveS,-90,telemetry);
+        x0 = new DriveToXPID(driveS,0,telemetry);
         x24 = new DriveToXPID(driveS,24,telemetry);
+        x48 = new DriveToXPID(driveS,48,telemetry);
         y0 = new DriveToYPID(driveS,0,telemetry);
         y24 = new DriveToYPID(driveS,-24,telemetry);
         y48 = new DriveToYPID(driveS,-48,telemetry);
-        t90 = new TurnToAnglePD(driveS,-137,telemetry);
+        t0 = new TurnToAnglePD(driveS,0,telemetry);
+        t90 = new TurnToAnglePD(driveS,-90,telemetry);
+
+        Command f24 = new DriveToXPID(driveS,24,telemetry);
+        Command b24 = new DriveToXPID(driveS,-24,telemetry);
+        Command f48 = new DriveToXPID(driveS,48,telemetry);
+        Command b48 = new DriveToXPID(driveS,-48,telemetry);
 
 
         shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
 
 //        schedule(new SequentialCommandGroup(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w,shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG));
-        schedule(new SequentialCommandGroup(y24,new WaitCommand(2000),y0));
-
+        schedule(new SequentialCommandGroup(x24));
     }
-    public SequentialCommandGroup DriveToPoint(double x, double y, double h) {
+    public SequentialCommandGroup DriveToPoint(double x, double y) {
         Command X = new DriveToXPID(driveS,x,telemetry);
         Command Y = new DriveToYPID(driveS,y,telemetry);
-//        Command H = new TurnToAnglePD(driveS,h,telemetry);
         return new SequentialCommandGroup(X,new WaitCommand(200),Y);
     }
 }
