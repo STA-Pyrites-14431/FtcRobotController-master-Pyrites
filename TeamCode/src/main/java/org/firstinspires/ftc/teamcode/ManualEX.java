@@ -138,20 +138,15 @@ public class ManualEX extends OpMode {
         telemetry.addData("Launcher Speed: ",launcherS.getSpeed());
         telemetry.update();
 
-//        if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
-//            launcherS.enable(0.35);
-//        } else if (operator.wasJustPressed(GamepadKeys.Button.X) || driver.wasJustPressed(GamepadKeys.Button.X)) {
-//            launcherS.enable(0.5);
-//        } else if (operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3 || driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
-//            launcherS.enable(1);
-//        } else if (operator.wasJustPressed(GamepadKeys.Button.Y) || driver.wasJustPressed(GamepadKeys.Button.Y)) {
-//            launcherS.disable();
-//        }
-
-        bumperR1.whenPressed(new InstantCommand(launcherS::enable));
-        bumperR2.whenPressed(new InstantCommand(launcherS::enable));
-        btnY1.whenPressed(new InstantCommand(launcherS::disable));
-        btnY2.whenPressed(new InstantCommand(launcherS::disable));
+        if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {
+            launcherS.enable(0.35);
+        } else if (operator.wasJustPressed(GamepadKeys.Button.X) || driver.wasJustPressed(GamepadKeys.Button.X)) {
+            launcherS.enable(0.5);
+        } else if (operator.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3 || driver.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER) > 0.3) {
+            launcherS.enable(1);
+        } else if (operator.wasJustPressed(GamepadKeys.Button.Y) || driver.wasJustPressed(GamepadKeys.Button.Y)) {
+            launcherS.disable();
+        }
 
         if (operator.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)) {
             intakeS.forward();

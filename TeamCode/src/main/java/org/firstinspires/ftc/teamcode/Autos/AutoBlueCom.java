@@ -54,7 +54,7 @@ public class AutoBlueCom extends CommandOpMode {
 //        driveS.setStart(start);
 
         //putting commands together
-        shootSCG = DriveXYTurnH(96,0,137);
+        shootSCG = DriveXYTurnH(96,12,135);
         endSCG = DriveXYTurnH(0,0,0);
         tn90 = new TurnToAnglePD(driveS,-137,telemetry);
         x0 = new DriveToXPID(driveS,0,telemetry);
@@ -66,15 +66,32 @@ public class AutoBlueCom extends CommandOpMode {
         t0 = new TurnToAnglePD(driveS,0,telemetry);
         t90 = new TurnToAnglePD(driveS,-90,telemetry);
 
+        Command x12 = DriveX(12);
+        Command xn12 = DriveX(-12);
+
+        Command shoot1 = DriveXYTurnH(96,-12,135);
+        Command tn135 = TurnH(-135);
+        Command pickupPoint1 = DriveXYTurnH(-24,12,90);
+
 
         shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD);
+//        SequentialCommandGroup pickup = new SequentialCommandGroup(iE,new WaitCommand(200),x12,new WaitCommand(200),xn12,iD);
 
-        schedule(new SequentialCommandGroup(tn90));
+        schedule(new SequentialCommandGroup(shoot1,w,shoot,w,tn135,w,pickupPoint1,w));
     }
     public SequentialCommandGroup DriveXYTurnH(double x, double y, double h) {
         Command X = new DriveToXPID(driveS,x,telemetry);
         Command Y = new DriveToYPID(driveS,y,telemetry);
         Command H = new TurnToAnglePD(driveS,-h,telemetry);
         return new SequentialCommandGroup(X,new WaitCommand(200),Y,new WaitCommand(200),H);
+    }
+    public Command DriveX(double x) {
+        return new DriveToXPID(driveS,x,telemetry);
+    }
+    public Command DriveY(double y) {
+        return new DriveToYPID(driveS,y,telemetry);
+    }
+    public Command TurnH(double h) {
+        return new TurnToAnglePD(driveS,h,telemetry);
     }
 }
