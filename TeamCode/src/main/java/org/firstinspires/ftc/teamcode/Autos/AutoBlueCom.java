@@ -10,9 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.Commands.DriveToX;
 import org.firstinspires.ftc.teamcode.Commands.DriveToXPID;
-import org.firstinspires.ftc.teamcode.Commands.DriveToY;
 import org.firstinspires.ftc.teamcode.Commands.DriveToYPID;
 import org.firstinspires.ftc.teamcode.Commands.TurnToAnglePD;
 import org.firstinspires.ftc.teamcode.Subsystems.Drive;
@@ -20,9 +18,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Launcher;
 import org.firstinspires.ftc.teamcode.Subsystems.Ramp;
 
-@Autonomous(name = "AutoRedCom")
-public class AutoRedCom extends CommandOpMode {
-
+@Autonomous(name = "AutoBlueCom")
+public class AutoBlueCom extends CommandOpMode {
     Drive driveS;
     Intake intakeS;
     Launcher launcherS;
@@ -59,7 +56,7 @@ public class AutoRedCom extends CommandOpMode {
         //putting commands together
         shootSCG = DriveXYTurnH(96,0,137);
         endSCG = DriveXYTurnH(0,0,0);
-        tn90 = new TurnToAnglePD(driveS,-90,telemetry);
+        tn90 = new TurnToAnglePD(driveS,-137,telemetry);
         x0 = new DriveToXPID(driveS,0,telemetry);
         x24 = new DriveToXPID(driveS,24,telemetry);
         x48 = new DriveToXPID(driveS,48,telemetry);
@@ -72,7 +69,7 @@ public class AutoRedCom extends CommandOpMode {
 
         shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD);
 
-        schedule(new SequentialCommandGroup(shootSCG,shoot));
+        schedule(new SequentialCommandGroup(tn90));
     }
     public SequentialCommandGroup DriveXYTurnH(double x, double y, double h) {
         Command X = new DriveToXPID(driveS,x,telemetry);
