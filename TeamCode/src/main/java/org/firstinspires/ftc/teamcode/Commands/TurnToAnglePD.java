@@ -27,7 +27,6 @@ public class TurnToAnglePD extends CommandBase {
 
     @Override
     public void initialize() {
-//        driveS.resetPose();
         pd.reset();
         pd.setSetPoint(targetA);
     }
@@ -47,6 +46,7 @@ public class TurnToAnglePD extends CommandBase {
     public void end (boolean interrupted) {
         driveS.updateOdom();
         driveS.stop();
+        driveS.resetPose();
         driveS.updateOdom();
     }
     @Override

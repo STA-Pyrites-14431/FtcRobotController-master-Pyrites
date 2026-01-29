@@ -27,7 +27,6 @@ public class DriveToXPID extends CommandBase {
 
     @Override
     public void initialize() {
-        driveS.resetPose();
         pid.reset();
         pid.setSetPoint(targetX);
     }
@@ -36,7 +35,7 @@ public class DriveToXPID extends CommandBase {
         double currentX = driveS.getX(DistanceUnit.INCH);
         double power = pid.calculate(currentX);
         power = Range.clip(power,-0.5,0.5);
-        driveS.robotCentricDrive(0,power,0);
+        driveS.fieldCentricDrive(0,power,0);
         driveS.updateOdom();
         tel.addData("XPos: ",driveS.getX(DistanceUnit.INCH));
         tel.addData("YPos: ",driveS.getY(DistanceUnit.INCH));
@@ -47,6 +46,7 @@ public class DriveToXPID extends CommandBase {
     public void end (boolean interrupted) {
         driveS.updateOdom();
         driveS.stop();
+        driveS.resetPose();
         driveS.updateOdom();
     }
     @Override

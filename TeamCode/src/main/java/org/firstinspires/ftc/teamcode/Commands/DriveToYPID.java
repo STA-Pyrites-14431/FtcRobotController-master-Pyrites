@@ -28,7 +28,6 @@ public class DriveToYPID extends CommandBase {
 
     @Override
     public void initialize() {
-//        driveS.resetPose();
         pid.reset();
         pid.setSetPoint(targetY);
     }
@@ -48,6 +47,7 @@ public class DriveToYPID extends CommandBase {
     public void end (boolean interrupted) {
         driveS.updateOdom();
         driveS.stop();
+        driveS.resetPose();
         driveS.updateOdom();
     }
     @Override

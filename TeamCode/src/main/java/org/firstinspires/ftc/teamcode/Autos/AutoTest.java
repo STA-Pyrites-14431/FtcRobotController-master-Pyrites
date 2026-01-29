@@ -29,8 +29,7 @@ public class AutoTest extends CommandOpMode {
     Command lE, lD, rE, rD, iE, iD, RB;
     Command x0,x24,x48,y0,y24,y48,t0,t45,t90, tn90;
     SequentialCommandGroup shoot;
-    Pose2D shootPose2D, p1, p2, p3, endPose2D; //Little p for points
-    SequentialCommandGroup shootSCG, P0, P1, P2, P3, endSCG; //Big P for paths
+    SequentialCommandGroup shootSCG, D1, D2, D3, D4, endSCG; //Big P for paths
     DistanceUnit I = DistanceUnit.INCH;
     AngleUnit D = AngleUnit.DEGREES;
     WaitCommand w;
@@ -57,13 +56,8 @@ public class AutoTest extends CommandOpMode {
 //        driveS.setStart(start);
 
         //putting commands together
-        shootSCG = DriveToPoint(24,-24);
-        Command tShoot = new TurnToAnglePD(driveS,-137,telemetry);
-        P0 = DriveToPoint(0,0);
-        P1 = DriveToPoint(12,-24);
-        P2 = DriveToPoint(-12,-24);
-        P3 = DriveToPoint(-36,-24);
-        endSCG = DriveToPoint(0,-24);
+        shootSCG = DriveXYTurnH(96,0,137);
+        endSCG = DriveXYTurnH(0,0,0);
         tn90 = new TurnToAnglePD(driveS,-90,telemetry);
         x0 = new DriveToXPID(driveS,0,telemetry);
         x24 = new DriveToXPID(driveS,24,telemetry);
@@ -74,20 +68,15 @@ public class AutoTest extends CommandOpMode {
         t0 = new TurnToAnglePD(driveS,0,telemetry);
         t90 = new TurnToAnglePD(driveS,-90,telemetry);
 
-        Command f24 = new DriveToXPID(driveS,24,telemetry);
-        Command b24 = new DriveToXPID(driveS,-24,telemetry);
-        Command f48 = new DriveToXPID(driveS,48,telemetry);
-        Command b48 = new DriveToXPID(driveS,-48,telemetry);
 
+        shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD);
 
-        shoot = new SequentialCommandGroup(lE,new WaitCommand(1250),rE,iE,new WaitCommand(2000),lD,rD,iD);
-
-//        schedule(new SequentialCommandGroup(shootSCG,w,shoot,w,P1,shootSCG,w,shoot,w,P2,w,shootSCG,w,shoot,w,P3,w,shootSCG,w,shoot,w,endSCG));
-        schedule(new SequentialCommandGroup(x24));
+        schedule(new SequentialCommandGroup(shootSCG,shoot));
     }
-    public SequentialCommandGroup DriveToPoint(double x, double y) {
+    public SequentialCommandGroup DriveXYTurnH(double x, double y, double h) {
         Command X = new DriveToXPID(driveS,x,telemetry);
         Command Y = new DriveToYPID(driveS,y,telemetry);
-        return new SequentialCommandGroup(X,new WaitCommand(200),Y);
+        Command H = new TurnToAnglePD(driveS,-h,telemetry);
+        return new SequentialCommandGroup(X,new WaitCommand(200),Y,new WaitCommand(200),H);
     }
 }
