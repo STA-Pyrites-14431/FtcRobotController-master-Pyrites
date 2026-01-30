@@ -128,8 +128,8 @@ public class ManualEX extends OpMode {
             lP -= 0.01;
         }
 
-        telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.MM));
-        telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.MM));
+        telemetry.addData("XPos (Inch): ",pos.getX(DistanceUnit.INCH));
+        telemetry.addData("YPos (Inch): ",pos.getY(DistanceUnit.INCH));
         telemetry.addData("Heading: ",heading);
         telemetry.addData("Launcher Status: ",launcherS.getStatus());
         telemetry.addData("Intake Status: ",intakeS.getStatus());
