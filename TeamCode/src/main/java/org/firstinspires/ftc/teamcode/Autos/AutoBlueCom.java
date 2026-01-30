@@ -25,7 +25,7 @@ public class AutoBlueCom extends CommandOpMode {
     Launcher launcherS;
     Ramp rampS;
     Command lE, lD, rE, rD, iE, iD, RB;
-    Command x0,x24,x48,y0,y24,y48,t0,t45,t90, tn90;
+    Command y0,y24,y48,t45,t90, tShoot;
     SequentialCommandGroup shoot;
     SequentialCommandGroup shootSCG, D1, D2, D3, D4, endSCG; //Big P for paths
     DistanceUnit I = DistanceUnit.INCH;
@@ -56,28 +56,40 @@ public class AutoBlueCom extends CommandOpMode {
         //putting commands together
         shootSCG = DriveXYTurnH(96,12,135);
         endSCG = DriveXYTurnH(0,0,0);
-        tn90 = new TurnToAnglePD(driveS,-137,telemetry);
-        x0 = new DriveToXPID(driveS,0,telemetry);
-        x24 = new DriveToXPID(driveS,24,telemetry);
-        x48 = new DriveToXPID(driveS,48,telemetry);
+        tShoot = new TurnToAnglePD(driveS,-122,telemetry);
         y0 = new DriveToYPID(driveS,0,telemetry);
         y24 = new DriveToYPID(driveS,-24,telemetry);
         y48 = new DriveToYPID(driveS,-48,telemetry);
-        t0 = new TurnToAnglePD(driveS,0,telemetry);
         t90 = new TurnToAnglePD(driveS,-90,telemetry);
 
-        Command x12 = DriveX(12);
-        Command xn12 = DriveX(-12);
+        Command x24 = DriveX(12);
+        Command xn24 = DriveX(-12);
 
-        Command shoot1 = DriveXYTurnH(96,-12,135);
-        Command tn135 = TurnH(-135);
+        double sH = -122; //shoot angle
+
+        Command t0 = TurnH(122);
+        Command tn90 = TurnH(-90);
+        Command shoot0 = DriveXYTurnH(96,-12,sH);
         Command pickupPoint1 = DriveXYTurnH(-24,12,90);
+        Command shoot1 = DriveXYTurnH(24,-12,sH);
+        Command pickupPoint2 = DriveXYTurnH(-48,12,90);
+        Command shoot2 = DriveXYTurnH(48,-12,sH);
+        Command pickupPoint3 = DriveXYTurnH(-72,12,90);
+        Command shoot3 = DriveXYTurnH(72,-12,sH);
+        Command end = DriveXYTurnH(-36,12,90);
 
 
-        shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD);
-//        SequentialCommandGroup pickup = new SequentialCommandGroup(iE,new WaitCommand(200),x12,new WaitCommand(200),xn12,iD);
+        shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD,t0);
+        SequentialCommandGroup pickup1 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),x24,new WaitCommand(200),xn24,new InstantCommand(intakeS::disable));
+        SequentialCommandGroup pickup2 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),x24,new WaitCommand(200),xn24,new InstantCommand(intakeS::disable));
+        SequentialCommandGroup pickup3 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),x24,new WaitCommand(200),xn24,new InstantCommand(intakeS::disable));
 
-        schedule(new SequentialCommandGroup(shoot1,w,shoot,w,tn135,w,pickupPoint1,w));
+        SequentialCommandGroup initialShoot = new SequentialCommandGroup(shoot0,new WaitCommand(200),shoot);
+        SequentialCommandGroup firstShoot = new SequentialCommandGroup(pickupPoint1,new WaitCommand(200),pickup1,new WaitCommand(200),TurnH(-90),new WaitCommand(200),shoot1,new WaitCommand(200),shoot);
+        SequentialCommandGroup secondShoot = new SequentialCommandGroup(pickupPoint2,new WaitCommand(200),pickup2,new WaitCommand(200),TurnH(-90),new WaitCommand(200),shoot2,new WaitCommand(200),shoot);
+        SequentialCommandGroup thirdShoot = new SequentialCommandGroup(pickupPoint3,new WaitCommand(200),pickup3,new WaitCommand(200),TurnH(-90),new WaitCommand(200),shoot3,new WaitCommand(200),shoot);
+
+        schedule(new SequentialCommandGroup(initialShoot,w,firstShoot,w,secondShoot,w,thirdShoot,w,end));
     }
     public SequentialCommandGroup DriveXYTurnH(double x, double y, double h) {
         Command X = new DriveToXPID(driveS,x,telemetry);

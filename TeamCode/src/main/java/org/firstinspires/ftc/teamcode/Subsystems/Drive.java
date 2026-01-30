@@ -74,4 +74,13 @@ public class Drive extends SubsystemBase {
     public void resetPose() {
         ODM.setPosition(new Pose2D(DistanceUnit.INCH,0,0,AngleUnit.DEGREES,0));
     }
+    public void resetX() {
+        ODM.setPosition(new Pose2D(DistanceUnit.INCH,0,ODM.getPosY(DistanceUnit.INCH),AngleUnit.DEGREES,ODM.getHeading(AngleUnit.DEGREES)));
+    }
+    public void resetY() {
+        ODM.setPosition(new Pose2D(DistanceUnit.INCH,ODM.getPosX(DistanceUnit.INCH),0,AngleUnit.DEGREES,ODM.getHeading(AngleUnit.DEGREES)));
+    }
+    public void resetH() {
+        ODM.setPosition(new Pose2D(DistanceUnit.INCH,ODM.getPosX(DistanceUnit.INCH),ODM.getPosY(DistanceUnit.INCH),AngleUnit.DEGREES,0));
+    }
 }

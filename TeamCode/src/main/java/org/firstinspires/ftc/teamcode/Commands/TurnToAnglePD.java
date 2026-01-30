@@ -46,7 +46,8 @@ public class TurnToAnglePD extends CommandBase {
     public void end (boolean interrupted) {
         driveS.updateOdom();
         driveS.stop();
-        driveS.resetPose();
+        driveS.resetH();
+//        driveS.resetPose();
         driveS.updateOdom();
     }
     @Override

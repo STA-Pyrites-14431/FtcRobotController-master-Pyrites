@@ -46,7 +46,8 @@ public class DriveToXPID extends CommandBase {
     public void end (boolean interrupted) {
         driveS.updateOdom();
         driveS.stop();
-        driveS.resetPose();
+        driveS.resetX();
+//        driveS.resetPose();
         driveS.updateOdom();
     }
     @Override

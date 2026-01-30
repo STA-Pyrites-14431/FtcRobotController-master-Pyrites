@@ -11,12 +11,12 @@ import org.firstinspires.ftc.teamcode.Subsystems.Drive;
 public class AutoForwardCom extends CommandOpMode {
 
     Drive driveS;
-    Command xn48, t90;
+    Command x48, t90;
     @Override
     public void initialize() {
         driveS = new Drive(hardwareMap,telemetry);
-        xn48 = new DriveToXPID(driveS,-48,telemetry);
+        x48 = new DriveToXPID(driveS,12,telemetry);
         t90 = new TurnToAnglePD(driveS,90,telemetry);
-        schedule(new SequentialCommandGroup(xn48,t90));
+        schedule(new SequentialCommandGroup(x48,t90));
     }
 }
