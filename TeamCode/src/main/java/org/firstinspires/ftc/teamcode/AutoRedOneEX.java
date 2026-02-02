@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-@Autonomous(name = "AutoRedOneEX")
+//@Autonomous(name = "AutoRedOneEX")
 public class AutoRedOneEX extends LinearOpMode {
 
     BotDriveEX driveEx, drive;

@@ -134,8 +134,6 @@ public class ManualEX extends OpMode {
         telemetry.addData("Launcher Status: ",launcherS.getStatus());
         telemetry.addData("Intake Status: ",intakeS.getStatus());
         telemetry.addData("Ramp Status: ",rampS.getStatus());
-        telemetry.addData("Pose2D: ",ODM.getPosition());
-        telemetry.addData("Launcher Speed: ",launcherS.getSpeed());
         telemetry.update();
 
         if (operator.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER) || driver.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)) {

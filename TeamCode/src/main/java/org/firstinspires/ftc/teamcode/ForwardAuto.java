@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-@Autonomous(name = "ForwardMarch")
+//@Autonomous(name = "ForwardMarch")
 public class ForwardAuto extends LinearOpMode {
 
     BotDrive drive = new BotDrive();

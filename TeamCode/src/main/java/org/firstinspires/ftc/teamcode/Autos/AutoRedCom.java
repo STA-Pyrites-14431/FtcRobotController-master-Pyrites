@@ -85,15 +85,18 @@ public class AutoRedCom extends CommandOpMode {
         Command end = DriveXYTurnH(-36,-12,-90);
 
 
-        shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),lD,rD,iD,t0);
-        SequentialCommandGroup pickup1 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),xn24,new WaitCommand(200),x24,new InstantCommand(intakeS::disable));
-        SequentialCommandGroup pickup2 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),xn24,new WaitCommand(200),x24,new InstantCommand(intakeS::disable));
-        SequentialCommandGroup pickup3 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),xn24,new WaitCommand(200),x24,new InstantCommand(intakeS::disable));
+        shoot = new SequentialCommandGroup(lE,new WaitCommand(2000),rE,iE,new WaitCommand(3000),new InstantCommand(launcherS::disable),new InstantCommand(rampS::disable),new InstantCommand(intakeS::disable),TurnH(-122));
+        SequentialCommandGroup pickup1 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),DriveX(-12),new WaitCommand(200),DriveX(12),new InstantCommand(intakeS::disable));
+        SequentialCommandGroup pickup2 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),DriveX(-12),new WaitCommand(200),DriveX(12),new InstantCommand(intakeS::disable));
+        SequentialCommandGroup pickup3 = new SequentialCommandGroup(new InstantCommand(intakeS::forward),new WaitCommand(200),DriveX(-12),new WaitCommand(200),DriveX(12),new InstantCommand(intakeS::disable));
 
-        SequentialCommandGroup initialShoot = new SequentialCommandGroup(shoot0,new WaitCommand(200),shoot);
-        SequentialCommandGroup firstShoot = new SequentialCommandGroup(pickupPoint1,new WaitCommand(200),pickup1,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot1,new WaitCommand(200),shoot);
-        SequentialCommandGroup secondShoot = new SequentialCommandGroup(pickupPoint2,new WaitCommand(200),pickup2,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot2,new WaitCommand(200),shoot);
-        SequentialCommandGroup thirdShoot = new SequentialCommandGroup(pickupPoint3,new WaitCommand(200),pickup3,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot3,new WaitCommand(200),shoot);
+        SequentialCommandGroup initialShoot = new SequentialCommandGroup(shoot0,new WaitCommand(200),new SequentialCommandGroup(new InstantCommand(launcherS::enable),new WaitCommand(2000),new InstantCommand(rampS::forward),new InstantCommand(intakeS::forward),new WaitCommand(3000),new InstantCommand(launcherS::disable),new InstantCommand(rampS::disable),new InstantCommand(intakeS::disable),TurnH(-122)));
+
+        SequentialCommandGroup firstShoot = new SequentialCommandGroup(pickupPoint1,new WaitCommand(200),pickup1,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot1,new WaitCommand(200),new SequentialCommandGroup(new InstantCommand(launcherS::enable),new WaitCommand(2000),new InstantCommand(rampS::forward),new InstantCommand(intakeS::forward),new WaitCommand(3000),new InstantCommand(launcherS::disable),new InstantCommand(rampS::disable),new InstantCommand(intakeS::disable),TurnH(-122)));
+
+        SequentialCommandGroup secondShoot = new SequentialCommandGroup(pickupPoint2,new WaitCommand(200),pickup2,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot2,new WaitCommand(200),new SequentialCommandGroup(new InstantCommand(launcherS::enable),new WaitCommand(2000),new InstantCommand(rampS::forward),new InstantCommand(intakeS::forward),new WaitCommand(3000),new InstantCommand(launcherS::disable),new InstantCommand(rampS::disable),new InstantCommand(intakeS::disable),TurnH(-122)));
+
+        SequentialCommandGroup thirdShoot = new SequentialCommandGroup(pickupPoint3,new WaitCommand(200),pickup3,new WaitCommand(200),TurnH(90),new WaitCommand(200),shoot3,new WaitCommand(200),new SequentialCommandGroup(new InstantCommand(launcherS::enable),new WaitCommand(2000),new InstantCommand(rampS::forward),new InstantCommand(intakeS::forward),new WaitCommand(3000),new InstantCommand(launcherS::disable),new InstantCommand(rampS::disable),new InstantCommand(intakeS::disable),TurnH(-122)));
 
         schedule(new SequentialCommandGroup(initialShoot,w,firstShoot,w,secondShoot,w,thirdShoot,w,end));
     }
